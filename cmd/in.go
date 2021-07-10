@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/JosephLai241/shift/modify"
+	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +31,7 @@ You can also include these sub-commands:
 * [-c COMPANY_NAME] - include a company name associated with the clock-in
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Print(`
+		utils.White.Print(`
  _     
 |_|___ 
 | |   |
@@ -38,26 +40,42 @@ You can also include these sub-commands:
 `)
 
 		currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
-		fmt.Println("Current time:", currentTime)
 
-		message, _ := cmd.Flags().GetString("message")
-		companyName, _ := cmd.Flags().GetString("company")
-
-		if len(companyName) > 1 {
-			fmt.Printf("Company: %s\n", companyName)
-		}
-		if len(message) > 1 {
-			fmt.Printf("Message: %s\n\n", message)
+		ss := modify.ShiftStatus{
+			Company: "",
+			Status:  "ACTIVE",
+			Time:    currentTime,
 		}
 
-		shiftData := ShiftData{
-			day:     strings.Split(currentTime, " ")[2],
-			time:    strings.Split(currentTime, " ")[1],
-			message: message,
-			company: companyName,
+		if status, err := modify.CheckStatus(); !status || err != nil {
+			utils.Green.Print("CLOCKED IN\n\n")
+			fmt.Println("Time:", utils.WhiteSprint(currentTime))
+
+			message, _ := cmd.Flags().GetString("message")
+			companyName, _ := cmd.Flags().GetString("company")
+
+			if len(companyName) > 1 {
+				ss.Company = companyName
+				fmt.Printf("Company: %s\n", utils.BlueSprint(companyName))
+			}
+			if len(message) > 1 {
+				fmt.Printf("Message: %s\n", utils.BlueSprint(message))
+			}
+			fmt.Printf("\n")
+
+			ss.SetStatus()
+
+			shiftData := ShiftData{
+				day:     strings.Split(currentTime, " ")[2],
+				time:    strings.Split(currentTime, " ")[1],
+				message: message,
+				company: companyName,
+			}
+			shiftData.RecordClockIn()
+		} else {
+			utils.Yellow.Print("ALREADY CLOCKED IN\n\n")
+			modify.DisplayStatus()
 		}
-		shiftData.RecordClockIn()
-		// fmt.Printf("%+v\n", in)
 	},
 }
 
