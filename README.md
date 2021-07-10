@@ -22,9 +22,9 @@ This project is largely inspired by Luke Schenk's Python CLI tool [`clck`][clck]
 
 # How `shift` Works
 
-This tool will create a directory `shift_timesheets/CURRENT_YEAR` within the directory in which you ran `shift`. User-entered information is then recorded into a CSV file titled `CURRENT_MONTH.csv`, located in the `CURRENT_YEAR` directory.
+This tool will create a directory `shift_timesheets/CURRENT_YEAR` within the current working directory. User-entered information is then recorded into a CSV file titled `CURRENT_MONTH.csv`, located in the `CURRENT_YEAR` directory.
 
-This is an example of the `shift_timesheets` directory structure if you have recorded shifts in July 2021:
+This is an example of the `shift_timesheets` directory structure if you ran `shift` sometime during July 2021:
 
 ```
 shift_timesheets/
