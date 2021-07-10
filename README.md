@@ -48,15 +48,33 @@ Optional data may also be recorded for both clock-in/out records. This includes:
 
 **usage: `shift in`**
 
-Use this command to clock-in. `shift` will write the clock-in time to the 
+Use this command to clock-in. The clock-in time to the `CURRENT_MONTH.csv` file.
+
+The `message` and/or `companyName` will also be written if a value is included.
 
 ## Clocking Out
 
 **usage: `shift out`**
 
+Use this command to clock-out. The clock-in time to the `CURRENT_MONTH.csv` file.
+
+The `message` and/or `companyName` will also be written if a value is included.
+
 ## Check Current Status
 
 **usage: `shift status`**
+
+Use this command to display the current shift status.
+
+This is a table of behaviors that can come from running this command:
+
+| Currently Clocked In      | Clocked Out/Inactive           | No Shifts Tracked |
+|---------------------------|--------------------------------|-------------------|
+| `CLOCK_IN_TIME`           | `LAST_CLOCK_IN`                | Error message     |
+| * `CLOCK_IN_MESSAGE`      | * `LAST_CLOCK_IN_MESSAGE`      |                   |
+| * `CLOCK_IN_COMPANY_NAME` | * `LAST_CLOCK_IN_COMPANY_NAME` |                   |
+
+* Only displayed if included during clock-in/out.
 
 <!-- Links -->
 [Go]: https://golang.org/
