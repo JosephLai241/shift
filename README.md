@@ -18,7 +18,7 @@
 
 `shift` is a command-line tool for keeping track of time spent during a shift. Designed for contractors/remote workers who need to track their own hours. 
 
-This project is largely inspired by Luke Schenk's Python CLI tool [`clck`][clck].
+This project is based on Luke Schenk's Python CLI tool [`clck`][clck].
 
 # How `shift` Works
 
