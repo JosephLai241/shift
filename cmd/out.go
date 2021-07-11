@@ -46,7 +46,6 @@ You can also include these sub-commands:
 			utils.Yellow.Println("Please clock-in.")
 			fmt.Println("")
 		} else {
-			utils.Green.Print("CLOCKED OUT\n\n")
 			currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
 			modify.DisplayStatus()
 
