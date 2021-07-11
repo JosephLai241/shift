@@ -2,12 +2,16 @@
 
 package modify
 
-import "os"
+import (
+	"os"
+
+	"github.com/JosephLai241/shift/utils"
+)
 
 // Get the current working directory.
 func GetCWD() string {
 	cwd, err := os.Getwd()
-	CheckError("Could not get the current working directory", err)
+	utils.CheckError("Could not get the current working directory", err)
 
 	return cwd
 }
