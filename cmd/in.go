@@ -39,9 +39,9 @@ You can also include these sub-commands:
 `)
 
 		if status, err := modify.CheckStatus(); !status || err != nil {
-			utils.Green.Print("CLOCKED IN\n\n")
 			currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
-			fmt.Println("Time:", utils.WhiteSprint(currentTime))
+			utils.Blue.Println("Time:", currentTime)
+			fmt.Println("")
 
 			message, _ := cmd.Flags().GetString("message")
 
