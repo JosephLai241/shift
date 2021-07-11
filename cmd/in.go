@@ -44,10 +44,6 @@ You can also include these sub-commands:
 			fmt.Println("Time:", utils.WhiteSprint(currentTime))
 
 			message, _ := cmd.Flags().GetString("message")
-			if len(message) > 1 {
-				fmt.Printf("Message: %s\n", utils.BlueSprint(message))
-			}
-			fmt.Printf("\n")
 
 			ss := modify.ShiftStatus{
 				Type:    "IN",
