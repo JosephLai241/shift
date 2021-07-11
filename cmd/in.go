@@ -27,8 +27,7 @@ recorded to the timesheet.
 
 You can also include these sub-commands:
 
-* [-m MESSAGE]      - include a message when clocking in
-* [-c COMPANY_NAME] - include a company name associated with the clock-in
+* [-m MESSAGE] - include a message when clocking in
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		utils.White.Print(`
@@ -39,39 +38,33 @@ You can also include these sub-commands:
 
 `)
 
-		currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
-
-		ss := modify.ShiftStatus{
-			Company: "",
-			Status:  "ACTIVE",
-			Time:    currentTime,
-		}
-
 		if status, err := modify.CheckStatus(); !status || err != nil {
 			utils.Green.Print("CLOCKED IN\n\n")
+			currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
 			fmt.Println("Time:", utils.WhiteSprint(currentTime))
 
 			message, _ := cmd.Flags().GetString("message")
-			companyName, _ := cmd.Flags().GetString("company")
-
-			if len(companyName) > 1 {
-				ss.Company = companyName
-				fmt.Printf("Company: %s\n", utils.BlueSprint(companyName))
-			}
 			if len(message) > 1 {
 				fmt.Printf("Message: %s\n", utils.BlueSprint(message))
 			}
 			fmt.Printf("\n")
 
+			ss := modify.ShiftStatus{
+				Type:    "IN",
+				Status:  "ACTIVE",
+				Time:    currentTime,
+				Message: message,
+			}
 			ss.SetStatus()
 
-			shiftData := ShiftData{
-				day:     strings.Split(currentTime, " ")[2],
-				time:    strings.Split(currentTime, " ")[1],
-				message: message,
-				company: companyName,
+			shiftData := modify.ShiftData{
+				Type:    "IN",
+				Date:    strings.Split(currentTime, " ")[0],
+				Day:     time.Now().Format("Monday"),
+				Time:    strings.Split(currentTime, " ")[1],
+				Message: message,
 			}
-			shiftData.RecordClockIn()
+			shiftData.RecordShift()
 		} else {
 			utils.Yellow.Print("ALREADY CLOCKED IN\n\n")
 			modify.DisplayStatus()
@@ -87,11 +80,6 @@ func init() {
 		"message", "m",
 		"",
 		"Include a complimentary clock-in message",
-	)
-	inCmd.PersistentFlags().StringP(
-		"company", "c",
-		"",
-		"Include a complimentary company name associated with the clock-in",
 	)
 
 	// Here you will define your flags and configuration settings.
