@@ -13,12 +13,12 @@ import (
 )
 
 var cwd = GetCWD()
-var dotfileName = fmt.Sprintf("%s/.%s", cwd, "shiftstatus")
+var DotfileName = fmt.Sprintf("%s/.%s", cwd, "shiftstatus")
 
 // Check the current shift status.
 // Return `false` if `.shiftstatus` dotfile exists or `STATUS` is currently `ACTIVE`.
 func CheckStatus() (bool, error) {
-	if dotfile, err := os.Open(dotfileName); err != nil {
+	if dotfile, err := os.Open(DotfileName); err != nil {
 		return false, errors.New("'.shiftstatus' does not exist")
 	} else {
 		scanner := bufio.NewScanner(dotfile)
@@ -34,8 +34,8 @@ func CheckStatus() (bool, error) {
 
 // Display the current shift status set in `.shiftstatus`.
 func DisplayStatus() {
-	dotfile, err := os.Open(dotfileName)
-	CheckError("Could not open .shiftstatus dotfile", err)
+	dotfile, err := os.Open(DotfileName)
+	utils.CheckError("Could not open .shiftstatus dotfile", err)
 	defer dotfile.Close()
 
 	scanner := bufio.NewScanner(dotfile)
@@ -48,25 +48,39 @@ func DisplayStatus() {
 	fmt.Println("")
 }
 
+// Format the string that will be written to the `.shiftstatus` dotfile.
+func formatStatus(io string, ss ShiftStatus) string {
+	status := fmt.Sprintf("STATUS=%s\n%s Time=%s\n", ss.Status, io, ss.Time)
+	if len(ss.Message) > 1 {
+		status += fmt.Sprintf("%s Message=%s", io, ss.Message)
+	}
+
+	return status
+}
+
 // Shift status struct.
 type ShiftStatus struct {
-	Company string
+	Type    string
 	Status  string
 	Time    string
+	Message string
 }
 
 // Set the shift status in the `.shiftstatus` dotfile.
 func (ss *ShiftStatus) SetStatus() {
-	dotfile, createErr := os.Create(dotfileName)
-	CheckError("Could not create .shiftstatus dotfile", createErr)
+	dotfile, createErr := os.Create(DotfileName)
+	utils.CheckError("Could not create .shiftstatus dotfile", createErr)
 
-	status := fmt.Sprintf("STATUS=%s\nCLOCK_IN_TIME=%s", ss.Status, ss.Time)
-	if len(ss.Company) > 1 {
-		status = status + fmt.Sprintf("\nCOMPANY=%s", ss.Company)
+	var io string
+	if ss.Type == "IN" {
+		io = "Clock-in"
+	} else {
+		io = "Clock-out"
 	}
+	status := formatStatus(io, *ss)
 
 	_, writeErr := dotfile.WriteString(status)
-	CheckError("Could not write to .shiftstatus dotfile", writeErr)
+	utils.CheckError("Could not write to .shiftstatus dotfile", writeErr)
 
-	defer dotfile.Close()
+	dotfile.Close()
 }
