@@ -30,7 +30,7 @@ You can also include these sub-commands:
 * [-m MESSAGE] - include a message when clocking out
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Print(`
+		utils.White.Print(`
          _   
  ___ _ _| |_ 
 | . | | |  _|
