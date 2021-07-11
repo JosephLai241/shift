@@ -40,7 +40,7 @@ You can also include these sub-commands:
 
 		if status, err := modify.CheckStatus(); !status || err != nil {
 			currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
-			utils.Blue.Println("Time:", currentTime)
+			utils.Blue.Println("Clock-in time:", currentTime)
 			fmt.Println("")
 
 			message, _ := cmd.Flags().GetString("message")
