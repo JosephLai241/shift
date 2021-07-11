@@ -2,9 +2,7 @@
 
 package utils
 
-import (
-	"github.com/fatih/color"
-)
+import "github.com/fatih/color"
 
 var Blue = color.New(color.FgBlue).Add(color.Bold)
 var Green = color.New(color.FgGreen).Add(color.Bold)
