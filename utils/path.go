@@ -1,17 +1,13 @@
 // Get filepaths used throughout this program.
 
-package modify
+package utils
 
-import (
-	"os"
-
-	"github.com/JosephLai241/shift/utils"
-)
+import "os"
 
 // Get the current working directory.
 func GetCWD() string {
 	cwd, err := os.Getwd()
-	utils.CheckError("Could not get the current working directory", err)
+	CheckError("Could not get the current working directory", err)
 
 	return cwd
 }
