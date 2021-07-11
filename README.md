@@ -47,6 +47,7 @@ The information that is always recorded into the timesheet includes:
 
 * Clock-in time
 * Clock-out time
+* Shift duration
 
 Optionally, an accompanying clock-in or clock-out message will also be written to the timesheet.
 
@@ -56,17 +57,25 @@ Optionally, an accompanying clock-in or clock-out message will also be written t
 
 **usage: `shift in`**
 
-Use this command to clock-in. The clock-in time to the `CURRENT_MONTH.csv` file.
+Use this command to clock-in. The clock-in time is then written to the `CURRENT_MONTH.csv` file.
 
-The `message` will also be written if a value is included.
+You can add a message corresponding to your clock in by including the `-m` flag:
+
+**usage: `shift in -m "YOUR_MESSAGE"`**
+
+The message will also be written to the timesheet.
 
 ## Clocking Out
 
 **usage: `shift out`**
 
-Use this command to clock-out. The clock-in time to the `CURRENT_MONTH.csv` file.
+Use this command to clock-out. The clock-in time is then written to the `CURRENT_MONTH.csv` file.
 
-The `message` will also be written if a value is included.
+You can add a message corresponding to your clock in by including the `-m` flag:
+
+**usage: `shift out -m "YOUR_MESSAGE"`**
+
+The message will also be written to the timesheet.
 
 ## Check Current Status
 
