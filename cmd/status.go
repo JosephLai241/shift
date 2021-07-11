@@ -5,6 +5,8 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/JosephLai241/shift/modify"
+	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -19,42 +21,34 @@ var statusCmd = &cobra.Command{
 |___|_| |__,|_| |___|___|	
 
 Use this command to check the current status of your shift.
-Clock-in time and shift duration will be displayed. 
 
-The complimentary shift message and company name will also be
-displayed, if applicable, by including the [-v] flag
+The clock-in time and shift duration will always be displayed.
+The message that was included with the clock-in will also 
+be displayed, if applicable.
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Print(`
+		utils.White.Print(`
      _       _           
  ___| |_ ___| |_ _ _ ___ 
 |_ -|  _| .'|  _| | |_ -|
 |___|_| |__,|_| |___|___|
 
 `)
-		verboseStatus, _ := cmd.Flags().GetBool("verbose")
-		if verboseStatus {
-			printVerboseDetails()
+
+		if status, err := modify.CheckStatus(); !status && err != nil {
+			utils.Red.Println("`shift` has not been run.")
+			utils.Red.Println("Please initialize the program by recording a shift.")
+			fmt.Println("")
+		} else if !status {
+			utils.Yellow.Print("`shift` is currently inactive. Please clock-in.\n\n")
+			utils.White.Print("Displaying last clock-out information.\n\n")
+			modify.DisplayStatus()
+		} else {
+			modify.DisplayStatus()
 		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(statusCmd)
-
-	statusCmd.Flags().BoolP(
-		"verbose", "v",
-		false,
-		"Print verbose shift status",
-	)
-}
-
-func printVerboseDetails() {
-	fmt.Println("VERBOSE DATA TRIGGERED")
-	// shiftData := ShiftData{
-	// 	day: day,
-	// 	time: time,
-	// 	message: message,
-	// 	company: company,
-	// }
 }
