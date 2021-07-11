@@ -4,7 +4,11 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
+	"time"
 
+	"github.com/JosephLai241/shift/modify"
+	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -23,7 +27,7 @@ recorded to the timesheet.
 
 You can also include these sub-commands:
 
-* '-m MESSAGE' - include a message when clocking out
+* [-m MESSAGE] - include a message when clocking out
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Print(`
@@ -33,9 +37,41 @@ You can also include these sub-commands:
 |___|___|_|
 
 `)
-		if message, _ := cmd.Flags().GetString("message"); message != "Clocked out" {
-			// fmt.Printf("Clock-in message: %s\n\n", message)
-			addClockOutMessage(message)
+
+		if status, err := modify.CheckStatus(); !status && err != nil {
+			utils.Red.Println("`shift` has not been run.")
+			utils.Red.Println("Please initialize the program by recording a shift.")
+		} else if !status && err == nil {
+			utils.Yellow.Println("`shift` is currently inactive.")
+			utils.Yellow.Println("Please clock-in.")
+			fmt.Println("")
+		} else {
+			utils.Green.Print("CLOCKED OUT\n\n")
+			currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
+			modify.DisplayStatus()
+
+			message, _ := cmd.Flags().GetString("message")
+			if len(message) > 1 {
+				fmt.Printf("Message: %s\n", utils.BlueSprint(message))
+			}
+			fmt.Printf("\n")
+
+			ss := modify.ShiftStatus{
+				Type:    "OUT",
+				Status:  "READY",
+				Time:    currentTime,
+				Message: message,
+			}
+			ss.SetStatus()
+
+			shiftData := modify.ShiftData{
+				Type:    "OUT",
+				Date:    strings.Split(currentTime, " ")[0],
+				Day:     time.Now().Format("Monday"),
+				Time:    strings.Split(currentTime, " ")[1],
+				Message: message,
+			}
+			shiftData.RecordShift()
 		}
 	},
 }
@@ -48,18 +84,4 @@ func init() {
 		"Clocked out",
 		"Include a complimentary clock-out message",
 	)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// outCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// outCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-}
-
-func addClockOutMessage(message string) {
-	fmt.Printf("Clock-out message: %s\n\n", message)
 }
