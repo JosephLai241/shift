@@ -3,15 +3,10 @@
 package cmd
 
 import (
-	"fmt"
-	"log"
-	"os"
-	"time"
-
 	"github.com/spf13/cobra"
 )
 
-var cfgFile string
+// var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -24,8 +19,9 @@ var rootCmd = &cobra.Command{
 |___|_|_|_|_| |_|
 
 shift is a command-line application designed for contractors/remote workers
-who need to keep track of their own shift data. shift can track:
+who need to keep track of their own shift data. shift will record:
 
+* the current date
 * clock-in time
 * clock-out time
 * shift duration
@@ -42,54 +38,8 @@ func Execute() {
 	cobra.CheckErr(rootCmd.Execute())
 }
 
-// Check if there is an error. Panic if an error is not `nil`.
-func checkError(message string, err error) {
-	if err != nil {
-		log.Fatal(message, err)
-		panic(err)
-	}
-}
-
-// Initialize clock-in data.
-type ShiftData struct {
-	day     string // Clock-in day
-	time    string // Clock-in time
-	message string // Complimentary message
-	company string // Complimentary company name
-}
-
-// Initialize the directories in which the timesheet will be stored as well as a
-// blank timesheet.
-func (shiftData *ShiftData) initializeTimesheet() *os.File {
-	cwd, err := os.Getwd()
-	checkError("Could not get the current working directory", err)
-
-	timesheetDirectory := fmt.Sprintf("%s/shift_timesheets/%s", cwd, time.Now().Format("2006"))
-	os.MkdirAll(timesheetDirectory, os.ModePerm)
-
-	currentMonthYear := fmt.Sprintf("%s.csv", time.Now().Format("January"))
-	file, err := os.Create(fmt.Sprintf("%s/%s", timesheetDirectory, currentMonthYear))
-	checkError("Could not create CSV file", err)
-	defer file.Close()
-
-	return file
-}
-
-// Write shift data to the `CURRENT_MONTH.csv` file.
-func (shiftData ShiftData) writeCSV(file *os.File) {
-
-}
-
-// Write In struct data to CSV.
-func (shiftData *ShiftData) RecordClockIn() {
-	file := shiftData.initializeTimesheet()
-	shiftData.writeCSV(file)
-
-}
-
 // func init() {
 // 	cobra.OnInitialize(initConfig)
-// 	cobra.OnInitialize(onInit)
 
 // 	// Here you will define your flags and configuration settings.
 // 	// Cobra supports persistent flags, which, if defined here,
@@ -99,14 +49,6 @@ func (shiftData *ShiftData) RecordClockIn() {
 // 	// Cobra also supports local flags, which will only run
 // 	// when this action is called directly.
 // 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-// }
-
-// func onInit() {
-// 	fmt.Println(`
-//      _   _ ___ _
-//  ___| |_|_|  _| |_
-// |_ -|   | |  _|  _|
-// |___|_|_|_|_| |_|`)
 // }
 
 // // initConfig reads in config file and ENV variables if set.
