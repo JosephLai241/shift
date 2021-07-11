@@ -12,7 +12,7 @@ import (
 	"github.com/JosephLai241/shift/utils"
 )
 
-var cwd = GetCWD()
+var cwd = utils.GetCWD()
 var DotfileName = fmt.Sprintf("%s/.%s", cwd, "shiftstatus")
 
 // Check the current shift status.
