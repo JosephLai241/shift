@@ -29,27 +29,6 @@ func getTimesheetPath(timesheetDirectory string) string {
 	return timesheetPath
 }
 
-// Write header row to the timesheet.
-func writeHeader(file *os.File) {
-	header := [][]string{{
-		"Date",
-		"Day",
-		"Clock-In",
-		"Clock-In Message",
-		"Clock-Out",
-		"Clock-Out Message",
-		"Duration",
-	}}
-
-	writer := csv.NewWriter(file)
-	defer writer.Flush()
-
-	for _, value := range header {
-		err := writer.Write(value)
-		utils.CheckError("Could not write header to timesheet", err)
-	}
-}
-
 // If the file does not already exist, create a new timesheet with column headers.
 // Returns *os.File for writing.
 func initializeTimesheet(timesheetPath string) *os.File {
@@ -60,7 +39,6 @@ func initializeTimesheet(timesheetPath string) *os.File {
 	} else if os.IsNotExist(err) {
 		file, err = os.Create(timesheetPath)
 		utils.CheckError("Could not create timesheet", err)
-		writeHeader(file)
 	}
 
 	return file
@@ -95,8 +73,22 @@ type ShiftData struct {
 	Message string // Complimentary message
 }
 
-// Write clock-in data to the timesheet.
+// Write clock-in data to the timesheet. Add the column titles if the timesheet
+// was just created.
 func (shiftData ShiftData) recordIn(overwriteFile *os.File, rows [][]string) {
+	if len(rows) == 0 {
+		header := []string{
+			"Date",
+			"Day",
+			"Clock-In",
+			"Clock-In Message",
+			"Clock-Out",
+			"Clock-Out Message",
+			"Shift Duration",
+		}
+		rows = append(rows, header)
+	}
+
 	newRow := []string{
 		shiftData.Date,
 		shiftData.Day,
