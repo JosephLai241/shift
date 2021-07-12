@@ -15,7 +15,7 @@ import (
 // Returns a string denoting the path to the timesheet directory.
 func InitializeDirectories() string {
 	cwd := utils.GetCWD()
-	timesheetDirectory := fmt.Sprintf("%s/shift_timesheets/%s", cwd, time.Now().Format("2006")) // CHANGE DIRECTORY TO JUST "shifts"
+	timesheetDirectory := fmt.Sprintf("%s/shifts/%s", cwd, time.Now().Format("2006"))
 	os.MkdirAll(timesheetDirectory, os.ModePerm)
 
 	return timesheetDirectory
