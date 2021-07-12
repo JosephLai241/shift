@@ -42,8 +42,7 @@ You can also include these sub-commands:
 			utils.BoldRed.Println("`shift` has not been run.")
 			utils.BoldRed.Println("Please initialize the program by recording a shift.")
 		} else if !status && err == nil {
-			utils.BoldYellow.Println("`shift` is currently inactive.")
-			utils.BoldYellow.Println("Please clock-in.")
+			utils.BoldYellow.Println("`shift` is currently inactive. Please clock-in.")
 			fmt.Println("")
 		} else {
 			currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
