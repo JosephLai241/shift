@@ -30,13 +30,7 @@ You can also include these sub-commands:
 * [-m MESSAGE] - include a message when clocking in
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.BoldWhite.Print(`
- _     
-|_|___ 
-| |   |
-|_|_|_|
-
-`)
+		fmt.Println(utils.InArt)
 
 		if status, err := models.CheckStatus(); !status || err != nil {
 			currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
