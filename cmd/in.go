@@ -30,7 +30,7 @@ You can also include these sub-commands:
 * [-m MESSAGE] - include a message when clocking in
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.White.Print(`
+		utils.BoldWhite.Print(`
  _     
 |_|___ 
 | |   |
@@ -40,7 +40,7 @@ You can also include these sub-commands:
 
 		if status, err := modify.CheckStatus(); !status || err != nil {
 			currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
-			utils.Blue.Println("Clock-in time:", currentTime)
+			utils.BoldBlue.Println("Clock-in time:", currentTime)
 			fmt.Println("")
 
 			message, _ := cmd.Flags().GetString("message")
@@ -62,7 +62,7 @@ You can also include these sub-commands:
 			}
 			shiftData.RecordShift()
 		} else {
-			utils.Yellow.Print("ALREADY CLOCKED IN\n\n")
+			utils.BoldYellow.Print("ALREADY CLOCKED IN\n\n")
 			modify.DisplayStatus()
 		}
 	},
