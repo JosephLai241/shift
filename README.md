@@ -18,14 +18,12 @@
     + [Check Current Status](#check-current-status)
     + [Amend Shift Message](#amend-shift-message)
     + [List Tracked Shifts](#list-tracked-shifts)
-        * [Display Records for a Different Month](#display-records-for-a-different-month)
-        * [Display Records for a Different Year](#display-records-for-a-different-year)
-        * [Combining Optional Flags](#combining-optional-flags)
+    + [Delete a Shift](#delete-a-shift)
 * [How to Set the Storage Option](#how-to-set-the-storage-option)
 
 # Introduction
 
-`shift` is a command-line tool for keeping track of shifts. Its primary audience is contractors/remote workers who need to track their own hours, but it is still useful for logging time spent doing anything.
+`shift` is a command-line tool for keeping track of shifts. Its primary audience is contractors (like myself) or remote workers who need to track their own hours, but it is still useful for logging time spent doing anything.
 
 This project is based on Luke Schenk's Python CLI tool [`clck`][clck].
 
@@ -39,9 +37,11 @@ cd shift/
 go build
 ```
 
+> ***NOTE:*** This program initializes and reads from files in your current working directory. Run `shift` in a directory in which you would like all your records to be stored.
+
 # How `shift` Works
 
-This tool is capable of storing shift data into a SQLite instance or into CSV spreadsheets. **The default is storing into CSV spreadsheets**, but you can configure which storage option you would like to use in the `.shiftconfig.yml` dotfile. The [How to Set the Storage Option](#how-to-set-the-storage-option) provides information for how to do so.
+This tool is capable of storing shift data into CSV spreadsheets or a local SQLite instance. **The default is storing into CSV spreadsheets**, but you can configure which storage option you would like to use in the `.shiftconfig.yml` dotfile. The [How to Set the Storage Option](#how-to-set-the-storage-option) provides information for how to do so.
 
 ## Storing Data Into Timesheets
 
@@ -72,39 +72,41 @@ This is an example of the database structure if you ran `shift` sometime during 
 ```
 shifts.db
 └── TABLE `year`
-    └── TABLE `2021`
-        └── TABLE `july`
+    └── TABLE `Y_2021`
+        └── TABLE `M_July`
 ```
 
 # How To Use `shift`
 
 ## Clocking In
 
-**usage: `shift in`**
+```
+shift in
 
-Use this command to clock-in. The clock-in time is then written to the `CURRENT_MONTH.csv` file.
+    -m "OPTIONAL MESSAGE"
+```
 
-You can add a message corresponding to your clock in by including the `-m` flag:
+Use this command to clock-in. The clock-in time is then written to the timesheet or database.
 
-**usage: `shift in -m "YOUR MESSAGE HERE"`**
-
-The message will also be written to the timesheet.
+You can record a message corresponding to your clock in by including the `-m` flag.
 
 ## Clocking Out
 
-**usage: `shift out`**
+```
+shift out
 
-Use this command to clock-out. The clock-in time is then written to the `CURRENT_MONTH.csv` file.
+    -m "OPTIONAL MESSAGE"
+```
 
-You can add a message corresponding to your clock in by including the `-m` flag:
+Use this command to clock-out. The clock-in time is then written to the timesheet or database.
 
-**usage: `shift out -m "YOUR MESSAGE HERE"`**
-
-The message will also be written to the timesheet.
+You can record a message corresponding to your clock in by including the `-m` flag.
 
 ## Check Current Status
 
-**usage: `shift status`**
+```
+shift status
+```
 
 Use this command to display the current shift status.
 
@@ -121,45 +123,67 @@ This is a table of behaviors that can come from running this command:
 
 ## Amend Shift Message
 
-**usage: `shift amend (in|out)`**
+```
+shift amend (in|out)
 
-Use this command to amend the most recently recorded shift's clock-in or clock-out message.
+    -d DAY_OF_THE_WEEK
+    -m MONTH
+    -y YEAR
+```
 
-You can amend a different shift's clock-in or clock-out message by including the `-d` flag:
+Use this command to amend the most recent shift's clock-in or clock-out message.
 
-**usage: `shift amend (in|out) -d DATE`**
+You can amend a different record's clock-in or clock-out message by including the `-d`, `-m`, and/or `-y` flags. Combine these flags to narrow your search.
 
-A selection menu is displayed if there were multiple recorded shifts on the same day.
+> ***NOTE:*** Type the entire day of the week when using the `-d` flag, ie. Monday.
+
+> ***NOTE:*** Type the entire month name when using the `-m` flag, ie. January.
+
+> ***NOTE:*** Type the entire year in YYYY format when using the `-y` flag, ie. 2021.
 
 ## List Tracked Shifts
 
-**usage: `shift list`**
+```
+shift list
+
+    -d DAY_OF_THE_WEEK
+    -m MONTH
+    -y YEAR
+```
 
 Use this command to list all recorded shifts for the current month.
 
-You can display the recorded shifts for a different month and/or year by including the `-m` and/or `-y` flags.
+You can display the recorded shifts for a different day, month, and/or year by including the `-d`, `-m`, and/or `-y` flags. Combine these flags to narrow your search.
 
-### Display Records for a Different Month
+> ***NOTE:*** Type the entire day of the week when using the `-d` flag, ie. Monday.
 
-**usage: `shift list -m MONTH_NAME`**
+> ***NOTE:*** Type the entire month name when using the `-m` flag, ie. January.
 
-> ***NOTE:*** Type the entire month name, ie. January
+> ***NOTE:*** Type the entire year in YYYY format when using the `-y` flag, ie. 2021.
 
-### Display Records for a Different Year
+## Delete a Shift
 
-**usage: `shift list -y YEAR`**
+```
+shift delete
 
-> ***NOTE:*** The accepted year format is: YYYY
+    -d DAY_OF_THE_WEEK
+    -m MONTH
+    -y YEAR
+```
 
-### Combining Optional Flags
+Use this command to delete the most recent shift.
 
-You can also combine these flags to list recorded shifts for that month and year.
+You can delete a different shift by including the `-d`, `-m`, and/or `-y` flags. Combine these flags to narrow your search.
 
-**usage: `shift list -m MONTH_NAME -y YEAR`**
+> ***NOTE:*** Type the entire day of the week when using the `-d` flag, ie. Monday.
+
+> ***NOTE:*** Type the entire month name when using the `-m` flag, ie. January.
+
+> ***NOTE:*** Type the entire year in YYYY format when using the `-y` flag, ie. 2021.
 
 # How to Set the Storage Option
 
-The `.shiftstatus.yml` configuration file only contains one line:
+The `.shiftconfig.yml` configuration file only contains one line:
 
 ```yaml
 storage-type: timesheet
