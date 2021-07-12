@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/JosephLai241/shift/modify"
+	"github.com/JosephLai241/shift/models"
 	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
 )
@@ -38,14 +38,14 @@ You can also include these sub-commands:
 
 `)
 
-		if status, err := modify.CheckStatus(); !status || err != nil {
+		if status, err := models.CheckStatus(); !status || err != nil {
 			currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
 			utils.BoldBlue.Println("Clock-in time:", currentTime)
 			fmt.Println("")
 
 			message, _ := cmd.Flags().GetString("message")
 
-			ss := modify.ShiftStatus{
+			ss := models.ShiftStatus{
 				Type:    "IN",
 				Status:  "ACTIVE",
 				Time:    currentTime,
@@ -53,7 +53,7 @@ You can also include these sub-commands:
 			}
 			ss.SetStatus()
 
-			shiftData := modify.ShiftData{
+			shiftData := models.ShiftData{
 				Type:    "IN",
 				Date:    strings.Split(currentTime, " ")[0],
 				Day:     time.Now().Format("Monday"),
@@ -63,7 +63,7 @@ You can also include these sub-commands:
 			shiftData.RecordShift()
 		} else {
 			utils.BoldYellow.Print("ALREADY CLOCKED IN\n\n")
-			modify.DisplayStatus()
+			models.DisplayStatus()
 		}
 	},
 }
