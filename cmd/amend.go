@@ -1,23 +1,11 @@
-/*
-Copyright © 2021 NAME HERE <EMAIL ADDRESS>
+//
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 package cmd
 
 import (
 	"fmt"
 
+	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -25,14 +13,16 @@ import (
 var amendCmd = &cobra.Command{
 	Use:   "amend",
 	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Long: `
+                     _ 
+ ___ _____ ___ ___ _| |
+| .'|     | -_|   | . |
+|__,|_|_|_|___|_|_|___|
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Use this command to amend a recorded shift's clock-in or clock-out message.
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("amend called")
+		fmt.Println(utils.AmendArt)
 	},
 }
 
