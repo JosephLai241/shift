@@ -5,7 +5,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/JosephLai241/shift/modify"
+	"github.com/JosephLai241/shift/models"
 	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
 )
@@ -35,16 +35,16 @@ be displayed, if applicable.
 
 `)
 
-		if status, err := modify.CheckStatus(); !status && err != nil {
+		if status, err := models.CheckStatus(); !status && err != nil {
 			utils.BoldRed.Println("`shift` has not been run.")
 			utils.BoldRed.Println("Please initialize the program by recording a shift.")
 			fmt.Println("")
 		} else if !status {
 			utils.BoldYellow.Print("`shift` is currently inactive. Please clock-in.\n\n")
 			utils.BoldWhite.Print("Displaying last clock-out information.\n\n")
-			modify.DisplayStatus()
+			models.DisplayStatus()
 		} else {
-			modify.DisplayStatus()
+			models.DisplayStatus()
 		}
 	},
 }
