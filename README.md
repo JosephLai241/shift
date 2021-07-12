@@ -127,7 +127,7 @@ As mentioned before, storing shift data in CSV timesheets is the default storage
 * `timesheet`
 * `database`
 
-> ***NOTE***: If the `storage-type` value is changed while you are clocked in, `shift` will process your change on your next clock in. 
+> ***NOTE***: `shift` will process your change on your next clock in if the `storage-type` value is changed while you are clocked in. 
 >
 > For example, if `storage-type` is currently set to `timesheet` and you change the value to `database` while clocked in, your clock-out data will still be written to the current month's timesheet. Shift data will be written to the `shifts.db` SQLite instance on your next clock-in.
 
