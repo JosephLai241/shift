@@ -8,8 +8,10 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/JosephLai241/shift/utils"
+	"github.com/fatih/color"
 )
 
 var cwd = utils.GetCWD()
@@ -39,11 +41,25 @@ func DisplayStatus() {
 	defer dotfile.Close()
 
 	scanner := bufio.NewScanner(dotfile)
+	var duration string
 	for scanner.Scan() {
 		splitString := strings.Split(scanner.Text(), "=")
-		if splitString[0] != "STATUS" {
-			utils.Blue.Printf("%s: %s\n", splitString[0], splitString[1])
+		if splitString[0] == "STATUS" {
+			if splitString[1] == "ACTIVE" {
+				utils.BoldGreen.Add(color.Italic).Printf("%s: %s\n\n", splitString[0], splitString[1])
+			} else {
+				fmt.Printf("%s: %s\n\n", splitString[0], splitString[1])
+			}
+		} else {
+			fmt.Printf("%s: %s\n", splitString[0], splitString[1])
+			if splitString[0] == "Clock-in Time" {
+				start, _ := time.Parse("01-02-2006 15:04:05 Mon", splitString[1])
+				duration = time.Since(start).String()
+			}
 		}
+	}
+	if len(duration) > 1 {
+		utils.BoldWhite.Printf("\nShift Duration: %s\n", duration)
 	}
 	fmt.Println("")
 }
