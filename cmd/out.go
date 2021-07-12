@@ -30,13 +30,7 @@ You can also include these sub-commands:
 * [-m MESSAGE] - include a message when clocking out
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.BoldWhite.Print(`
-         _   
- ___ _ _| |_ 
-| . | | |  _|
-|___|___|_|
-
-`)
+		fmt.Println(utils.OutArt)
 
 		if status, err := models.CheckStatus(); !status && err != nil {
 			utils.BoldRed.Println("`shift` has not been run.")

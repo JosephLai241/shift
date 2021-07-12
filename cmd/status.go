@@ -27,13 +27,7 @@ The message that was included with the clock-in will also
 be displayed, if applicable.
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.BoldWhite.Print(`
-     _       _           
- ___| |_ ___| |_ _ _ ___ 
-|_ -|  _| .'|  _| | |_ -|
-|___|_| |__,|_| |___|___|
-
-`)
+		fmt.Println(utils.StatusArt)
 
 		if status, err := models.CheckStatus(); !status && err != nil {
 			utils.BoldRed.Println("`shift` has not been run.")
