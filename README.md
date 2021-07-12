@@ -16,6 +16,11 @@
     + [Clocking In](#clocking-in)
     + [Clocking Out](#clocking-out)
     + [Check Current Status](#check-current-status)
+    + [Amend Shift Message](#amend-shift-message)
+    + [List Tracked Shifts](#list-tracked-shifts)
+        * [Display Records for a Different Month](#display-records-for-a-different-month)
+        * [Display Records for a Different Year](#display-records-for-a-different-year)
+        * [Combining Optional Flags](#combining-optional-flags)
 * [How to Set the Storage Option](#how-to-set-the-storage-option)
 
 # Introduction
@@ -81,7 +86,7 @@ Use this command to clock-in. The clock-in time is then written to the `CURRENT_
 
 You can add a message corresponding to your clock in by including the `-m` flag:
 
-**usage: `shift in -m "YOUR_MESSAGE"`**
+**usage: `shift in -m "YOUR MESSAGE HERE"`**
 
 The message will also be written to the timesheet.
 
@@ -93,7 +98,7 @@ Use this command to clock-out. The clock-in time is then written to the `CURRENT
 
 You can add a message corresponding to your clock in by including the `-m` flag:
 
-**usage: `shift out -m "YOUR_MESSAGE"`**
+**usage: `shift out -m "YOUR MESSAGE HERE"`**
 
 The message will also be written to the timesheet.
 
@@ -113,6 +118,44 @@ This is a table of behaviors that can come from running this command:
 \* Only displayed if included during clock-in/out.
 
 \** If you have never run `shift` prior to running the `status` command, an error message will inform you to track a shift before attempting to run the command.
+
+## Amend Shift Message
+
+**usage: `shift amend (in|out)`**
+
+Use this command to amend the most recently recorded shift's clock-in or clock-out message.
+
+You can amend a different shift's clock-in or clock-out message by including the `-d` flag:
+
+**usage: `shift amend (in|out) -d DATE`**
+
+A selection menu is displayed if there were multiple recorded shifts on the same day.
+
+## List Tracked Shifts
+
+**usage: `shift list`**
+
+Use this command to list all recorded shifts for the current month.
+
+You can display the recorded shifts for a different month and/or year by including the `-m` and/or `-y` flags.
+
+### Display Records for a Different Month
+
+**usage: `shift list -m MONTH_NAME`**
+
+> ***NOTE:*** Type the entire month name, ie. January
+
+### Display Records for a Different Year
+
+**usage: `shift list -y YEAR`**
+
+> ***NOTE:*** The accepted year format is: YYYY
+
+### Combining Optional Flags
+
+You can also combine these flags to list recorded shifts for that month and year.
+
+**usage: `shift list -m MONTH_NAME -y YEAR`**
 
 # How to Set the Storage Option
 
