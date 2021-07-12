@@ -30,7 +30,7 @@ You can also include these sub-commands:
 * [-m MESSAGE] - include a message when clocking out
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.White.Print(`
+		utils.BoldWhite.Print(`
          _   
  ___ _ _| |_ 
 | . | | |  _|
@@ -39,11 +39,11 @@ You can also include these sub-commands:
 `)
 
 		if status, err := modify.CheckStatus(); !status && err != nil {
-			utils.Red.Println("`shift` has not been run.")
-			utils.Red.Println("Please initialize the program by recording a shift.")
+			utils.BoldRed.Println("`shift` has not been run.")
+			utils.BoldRed.Println("Please initialize the program by recording a shift.")
 		} else if !status && err == nil {
-			utils.Yellow.Println("`shift` is currently inactive.")
-			utils.Yellow.Println("Please clock-in.")
+			utils.BoldYellow.Println("`shift` is currently inactive.")
+			utils.BoldYellow.Println("Please clock-in.")
 			fmt.Println("")
 		} else {
 			currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
