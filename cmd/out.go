@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/JosephLai241/shift/modify"
+	"github.com/JosephLai241/shift/models"
 	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
 )
@@ -38,7 +38,7 @@ You can also include these sub-commands:
 
 `)
 
-		if status, err := modify.CheckStatus(); !status && err != nil {
+		if status, err := models.CheckStatus(); !status && err != nil {
 			utils.BoldRed.Println("`shift` has not been run.")
 			utils.BoldRed.Println("Please initialize the program by recording a shift.")
 		} else if !status && err == nil {
@@ -47,11 +47,11 @@ You can also include these sub-commands:
 			fmt.Println("")
 		} else {
 			currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
-			modify.DisplayStatus()
+			models.DisplayStatus()
 
 			message, _ := cmd.Flags().GetString("message")
 
-			ss := modify.ShiftStatus{
+			ss := models.ShiftStatus{
 				Type:    "OUT",
 				Status:  "READY",
 				Time:    currentTime,
@@ -59,7 +59,7 @@ You can also include these sub-commands:
 			}
 			ss.SetStatus()
 
-			shiftData := modify.ShiftData{
+			shiftData := models.ShiftData{
 				Type:    "OUT",
 				Date:    strings.Split(currentTime, " ")[0],
 				Day:     time.Now().Format("Monday"),
