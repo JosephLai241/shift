@@ -13,7 +13,7 @@ import (
 
 // Initialize the directories in which the timesheet will be stored.
 // Returns a string denoting the path to the timesheet directory.
-func initializeDirectories() string {
+func InitializeDirectories() string {
 	cwd := utils.GetCWD()
 	timesheetDirectory := fmt.Sprintf("%s/shift_timesheets/%s", cwd, time.Now().Format("2006")) // CHANGE DIRECTORY TO JUST "shifts"
 	os.MkdirAll(timesheetDirectory, os.ModePerm)
@@ -22,7 +22,7 @@ func initializeDirectories() string {
 }
 
 // Create the path to the timesheet.
-func getTimesheetPath(timesheetDirectory string) string {
+func GetTimesheetPath(timesheetDirectory string) string {
 	currentMonthYear := fmt.Sprintf("%s.csv", time.Now().Format("January"))
 	timesheetPath := fmt.Sprintf("%s/%s", timesheetDirectory, currentMonthYear)
 
@@ -31,7 +31,7 @@ func getTimesheetPath(timesheetDirectory string) string {
 
 // If the file does not already exist, create a new timesheet with column headers.
 // Returns *os.File for writing.
-func initializeTimesheet(timesheetPath string) *os.File {
+func InitializeTimesheet(timesheetPath string) *os.File {
 	var file *os.File
 	if _, err := os.Stat(timesheetPath); err == nil {
 		file, _ = os.OpenFile(timesheetPath, os.O_RDWR, 0755)
@@ -45,7 +45,7 @@ func initializeTimesheet(timesheetPath string) *os.File {
 }
 
 // Write data to to the timesheet.
-func writeToTimesheet(file *os.File, rows [][]string) {
+func WriteToTimesheet(file *os.File, rows [][]string) {
 	writer := csv.NewWriter(file)
 	err := writer.WriteAll(rows)
 	utils.CheckError("Could not flush writer data after writing data to timesheet", err)
@@ -55,7 +55,7 @@ func writeToTimesheet(file *os.File, rows [][]string) {
 }
 
 // Read timesheet and extract the data into a nested list of strings.
-func readTimesheet(file *os.File) [][]string {
+func ReadTimesheet(file *os.File) [][]string {
 	reader := csv.NewReader(file)
 	rows, err := reader.ReadAll()
 	utils.CheckError("Could not read timesheet", err)
