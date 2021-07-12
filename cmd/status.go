@@ -27,7 +27,7 @@ The message that was included with the clock-in will also
 be displayed, if applicable.
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.White.Print(`
+		utils.BoldWhite.Print(`
      _       _           
  ___| |_ ___| |_ _ _ ___ 
 |_ -|  _| .'|  _| | |_ -|
@@ -36,12 +36,12 @@ be displayed, if applicable.
 `)
 
 		if status, err := modify.CheckStatus(); !status && err != nil {
-			utils.Red.Println("`shift` has not been run.")
-			utils.Red.Println("Please initialize the program by recording a shift.")
+			utils.BoldRed.Println("`shift` has not been run.")
+			utils.BoldRed.Println("Please initialize the program by recording a shift.")
 			fmt.Println("")
 		} else if !status {
-			utils.Yellow.Print("`shift` is currently inactive. Please clock-in.\n\n")
-			utils.White.Print("Displaying last clock-out information.\n\n")
+			utils.BoldYellow.Print("`shift` is currently inactive. Please clock-in.\n\n")
+			utils.BoldWhite.Print("Displaying last clock-out information.\n\n")
 			modify.DisplayStatus()
 		} else {
 			modify.DisplayStatus()
