@@ -27,7 +27,7 @@ recorded to the timesheet.
 
 You can also include these sub-commands:
 
-* [-m MESSAGE] - include a message when clocking in
+* [-m "YOUR MESSAGE HERE"] - include a message when clocking in
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(utils.InArt)
