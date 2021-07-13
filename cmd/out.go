@@ -10,6 +10,7 @@ import (
 	"github.com/JosephLai241/shift/models"
 	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // outCmd represents the out command
@@ -32,6 +33,8 @@ You can also include these sub-commands:
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(utils.OutArt)
 
+		message, _ := cmd.Flags().GetString("message")
+
 		if status, err := models.CheckStatus(); !status && err != nil {
 			utils.BoldRed.Println("`shift` has not been run.")
 			utils.BoldRed.Println("Please initialize the program by recording a shift.")
@@ -39,7 +42,12 @@ You can also include these sub-commands:
 			utils.BoldYellow.Println("`shift` is currently inactive. Please clock-in.")
 			fmt.Println("")
 		} else {
-			recordClockOut(cmd)
+			switch storageType := viper.GetString("storage-type"); storageType {
+			case "timesheet":
+				recordOutTimesheet(message)
+			case "database":
+				recordOutDatabase(message)
+			}
 		}
 	},
 }
@@ -54,12 +62,10 @@ func init() {
 	)
 }
 
-// Record clock-out.
-func recordClockOut(cmd *cobra.Command) {
+// Record clock-out in the timesheet.
+func recordOutTimesheet(message string) {
 	currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
 	models.DisplayStatus()
-
-	message, _ := cmd.Flags().GetString("message")
 
 	ss := models.ShiftStatus{
 		Type:    "OUT",
@@ -77,4 +83,9 @@ func recordClockOut(cmd *cobra.Command) {
 		Message: message,
 	}
 	shiftData.RecordShift()
+}
+
+// Record clock-out in the database.
+func recordOutDatabase(message string) {
+	fmt.Println("DATABASE SELECTED")
 }
