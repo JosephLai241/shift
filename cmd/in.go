@@ -33,7 +33,7 @@ You can also include these sub-commands:
 		fmt.Println(utils.InArt)
 
 		if status, err := models.CheckStatus(); !status || err != nil {
-			recordShift(cmd)
+			recordClockIn(cmd)
 		} else {
 			utils.BoldYellow.Print("ALREADY CLOCKED IN\n\n")
 			models.DisplayStatus()
@@ -52,8 +52,8 @@ func init() {
 	)
 }
 
-// Record the shift.
-func recordShift(cmd *cobra.Command) {
+// Record clock-in.
+func recordClockIn(cmd *cobra.Command) {
 	currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
 	utils.BoldBlue.Println("Clock-in time:", currentTime)
 	fmt.Println("")
