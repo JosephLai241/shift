@@ -3,8 +3,8 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
-	"os"
 
 	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
@@ -60,13 +60,12 @@ func initConfig() {
 		"database":  {},
 	}
 	if _, ok := acceptedValues[envString]; !ok {
-		fmt.Println(utils.ErrorArt)
-		utils.BoldRed.Print("`.shiftconfig.yml` error: The `storage-type` value is invalid. Accepted values are:\n\n")
-		for key := range acceptedValues {
-			utils.BoldRed.Printf("- '%s'\n", key)
-		}
-		fmt.Println("")
+		utils.CheckError("`.shiftconfig.yml` error", errors.New(`
 
-		os.Exit(1)
+The "storage-type" value is invalid. Accepted values are:
+
+- timesheet
+- database
+		`))
 	}
 }
