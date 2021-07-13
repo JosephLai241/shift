@@ -187,7 +187,7 @@ You can delete a different shift by including the `-d`, `-m`, and/or `-y` flags.
 
 # How to Set the Storage Option
 
-The `.shiftconfig.yml` configuration file only contains one line:
+On the first run, `shift` will create the `.shiftconfig.yml` configuration file in your current working directory. It only contains one line:
 
 ```yaml
 storage-type: timesheet
