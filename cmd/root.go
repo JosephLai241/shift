@@ -3,12 +3,15 @@
 package cmd
 
 import (
+	"fmt"
+	"os"
+
+	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-// var cfgFile string
-
-// rootCmd represents the base command when called without any subcommands
+// rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "shift",
 	Short: "A command-line application for tracking shift (clock-in, clock-out, duration, etc.) data",
@@ -27,9 +30,6 @@ who need to keep track of their own shift data. shift will record:
 * shift duration
 * any messages associated with a clock-in or clock-out command call
 	`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -38,39 +38,35 @@ func Execute() {
 	cobra.CheckErr(rootCmd.Execute())
 }
 
-// func init() {
-// 	cobra.OnInitialize(initConfig)
+func init() {
+	cobra.OnInitialize(initConfig)
+}
 
-// 	// Here you will define your flags and configuration settings.
-// 	// Cobra supports persistent flags, which, if defined here,
-// 	// will be global for your application.
-// 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.shift.yaml)")
+// initConfig reads in the `.shiftconfig.yml` config file.
+func initConfig() {
+	configFile := fmt.Sprintf("%s/%s", utils.GetCWD(), ".shiftconfig.yml")
+	viper.SetConfigFile(configFile)
+	viper.SetDefault("storage-type", "timesheet")
 
-// 	// Cobra also supports local flags, which will only run
-// 	// when this action is called directly.
-// 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-// }
+	err := viper.ReadInConfig()
+	if err != nil {
+		viper.SafeWriteConfigAs(configFile)
+	}
 
-// // initConfig reads in config file and ENV variables if set.
-// func initConfig() {
-// 	if cfgFile != "" {
-// 		// Use config file from the flag.
-// 		viper.SetConfigFile(cfgFile)
-// 	} else {
-// 		// Find home directory.
-// 		home, err := os.UserHomeDir()
-// 		cobra.CheckErr(err)
+	envString := viper.GetString("storage-type")
 
-// 		// Search config in home directory with name ".shift" (without extension).
-// 		viper.AddConfigPath(home)
-// 		viper.SetConfigType("yaml")
-// 		viper.SetConfigName(".shift")
-// 	}
+	acceptedValues := map[string]struct{}{
+		"timesheet": {},
+		"database":  {},
+	}
+	if _, ok := acceptedValues[envString]; !ok {
+		fmt.Println(utils.ErrorArt)
+		utils.BoldRed.Print("`.shiftconfig.yml` error: The `storage-type` value is invalid. Accepted values are:\n\n")
+		for key := range acceptedValues {
+			utils.BoldRed.Printf("- '%s'\n", key)
+		}
+		fmt.Println("")
 
-// 	viper.AutomaticEnv() // read in environment variables that match
-
-// 	// If a config file is found, read it in.
-// 	if err := viper.ReadInConfig(); err == nil {
-// 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-// 	}
-// }
+		os.Exit(1)
+	}
+}
