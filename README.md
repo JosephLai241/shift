@@ -37,6 +37,12 @@ cd shift/
 go build
 ```
 
+Then verify `shift` built successfully:
+
+```
+./shift version
+```
+
 > ***NOTE:*** This program initializes and reads from files in your current working directory. Run `shift` in a directory in which you would like all your records to be stored.
 
 # How `shift` Works
@@ -124,11 +130,9 @@ This is a table of behaviors that can come from running this command:
 ## Amend Shift Message
 
 ```
-shift amend (in|out)
+shift amend (in|out) "YOUR NEW MESSAGE HERE"
 
-    -d DAY_OF_THE_WEEK
-    -m MONTH
-    -y YEAR
+    -d date
 ```
 
 Use this command to amend the most recent shift's clock-in or clock-out message.
