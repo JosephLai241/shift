@@ -10,6 +10,7 @@ import (
 	"github.com/JosephLai241/shift/models"
 	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // inCmd represents the in command
@@ -32,8 +33,15 @@ You can also include these sub-commands:
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(utils.InArt)
 
+		message, _ := cmd.Flags().GetString("message")
+
 		if status, err := models.CheckStatus(); !status || err != nil {
-			recordClockIn(cmd)
+			switch storageType := viper.GetString("storage-type"); storageType {
+			case "timesheet":
+				recordInTimesheet(message)
+			case "database":
+				recordInDatabase(message)
+			}
 		} else {
 			utils.BoldYellow.Print("ALREADY CLOCKED IN\n\n")
 			models.DisplayStatus()
@@ -52,13 +60,11 @@ func init() {
 	)
 }
 
-// Record clock-in.
-func recordClockIn(cmd *cobra.Command) {
+// Record clock-in in the timesheet.
+func recordInTimesheet(message string) {
 	currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
 	utils.BoldBlue.Println("Clock-in time:", currentTime)
 	fmt.Println("")
-
-	message, _ := cmd.Flags().GetString("message")
 
 	ss := models.ShiftStatus{
 		Type:    "IN",
@@ -76,4 +82,9 @@ func recordClockIn(cmd *cobra.Command) {
 		Message: message,
 	}
 	shiftData.RecordShift()
+}
+
+// Record clock-in in the database.
+func recordInDatabase(message string) {
+	fmt.Println("DATABASE SELECTED")
 }
