@@ -50,3 +50,9 @@ var DeleteArt string = BoldWhite.Sprint(`
 | . | -_| | -_|  _| -_|
 |___|___|_|___|_| |___|
 `)
+
+var ErrorArt string = BoldRed.Sprint(`
+ ___ 
+| -_|
+|___|
+`)
