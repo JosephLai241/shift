@@ -132,18 +132,18 @@ This is a table of behaviors that can come from running this command:
 ```
 shift amend (in|out) "YOUR NEW MESSAGE HERE"
 
-    -d date
+    -d DATE or DAY_OF_THE_WEEK
 ```
 
 Use this command to amend the most recent shift's clock-in or clock-out message.
 
-You can amend a different record's clock-in or clock-out message by including the `-d`, `-m`, and/or `-y` flags. Combine these flags to narrow your search.
+You can amend a different record's clock-in or clock-out message by including the `-d` flag. 
 
-> ***NOTE:*** Type the entire day of the week when using the `-d` flag, ie. Monday.
-
-> ***NOTE:*** Type the entire month name when using the `-m` flag, ie. January.
-
-> ***NOTE:*** Type the entire year in YYYY format when using the `-y` flag, ie. 2021.
+> ***NOTE:*** The `-d` flag accepts either a day of the week or a date.
+>
+> Type the entire day of the week if you are searching by day.
+>
+> The accepted date format is MM/DD/YYYY.
 
 ## List Tracked Shifts
 
