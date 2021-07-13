@@ -39,27 +39,7 @@ You can also include these sub-commands:
 			utils.BoldYellow.Println("`shift` is currently inactive. Please clock-in.")
 			fmt.Println("")
 		} else {
-			currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
-			models.DisplayStatus()
-
-			message, _ := cmd.Flags().GetString("message")
-
-			ss := models.ShiftStatus{
-				Type:    "OUT",
-				Status:  "READY",
-				Time:    currentTime,
-				Message: message,
-			}
-			ss.SetStatus()
-
-			shiftData := models.ShiftData{
-				Type:    "OUT",
-				Date:    strings.Split(currentTime, " ")[0],
-				Day:     time.Now().Format("Monday"),
-				Time:    strings.Split(currentTime, " ")[1],
-				Message: message,
-			}
-			shiftData.RecordShift()
+			recordClockOut(cmd)
 		}
 	},
 }
@@ -72,4 +52,29 @@ func init() {
 		"Clocked out",
 		"Include a complimentary clock-out message",
 	)
+}
+
+// Record clock-out.
+func recordClockOut(cmd *cobra.Command) {
+	currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
+	models.DisplayStatus()
+
+	message, _ := cmd.Flags().GetString("message")
+
+	ss := models.ShiftStatus{
+		Type:    "OUT",
+		Status:  "READY",
+		Time:    currentTime,
+		Message: message,
+	}
+	ss.SetStatus()
+
+	shiftData := models.ShiftData{
+		Type:    "OUT",
+		Date:    strings.Split(currentTime, " ")[0],
+		Day:     time.Now().Format("Monday"),
+		Time:    strings.Split(currentTime, " ")[1],
+		Message: message,
+	}
+	shiftData.RecordShift()
 }
