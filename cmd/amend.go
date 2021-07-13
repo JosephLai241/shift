@@ -4,6 +4,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -14,7 +15,7 @@ import (
 
 // amendCmd represents the amend command
 var amendCmd = &cobra.Command{
-	Use:   "amend",
+	Use:   "amend (in|out)",
 	Short: "A brief description of your command",
 	Long: `
                      _ 
@@ -26,9 +27,15 @@ Use this command to amend a recorded shift's clock-in or clock-out message.
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(utils.AmendArt)
+
 		if len(args) < 1 {
+			utils.BoldRed.Println("`amend` requires in or out.")
+			fmt.Println("")
+			os.Exit(1)
+		} else if len(args) < 2 {
 			utils.BoldRed.Println("`amend` requires a new message.")
 			fmt.Println("")
+			os.Exit(1)
 		} else {
 			utils.BoldBlue.Printf("New message: %s\n", args[len(args)-1])
 		}
@@ -38,6 +45,7 @@ Use this command to amend a recorded shift's clock-in or clock-out message.
 			if isValid, response := checkDFlag(userInput); !isValid && response != "valid" {
 				utils.BoldRed.Printf("\n%s\n", response)
 				fmt.Println("")
+				os.Exit(1)
 			} else {
 				fmt.Println("GOOD FUCKING JOB.")
 			}
