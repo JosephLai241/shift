@@ -9,8 +9,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/JosephLai241/shift/modify"
 	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // amendCmd represents the amend command
@@ -28,29 +30,13 @@ Use this command to amend a recorded shift's clock-in or clock-out message.
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(utils.AmendArt)
 
-		if len(args) < 1 {
-			utils.BoldRed.Println("`amend` requires in or out.")
-			fmt.Println("")
-			os.Exit(1)
-		} else if len(args) < 2 {
-			utils.BoldRed.Println("`amend` requires a new message.")
-			fmt.Println("")
-			os.Exit(1)
-		} else {
-			utils.BoldBlue.Printf("New message: %s\n", args[len(args)-1])
+		userInput := checkInput(args, cmd)
+		switch storageType := viper.GetString("storage-type"); storageType {
+		case "timesheet":
+			amendTimesheet(userInput)
+		case "database":
+			fmt.Println("DATABASE SELECTED")
 		}
-
-		userInput, _ := cmd.Flags().GetString("dayordate")
-		if len(userInput) > 1 {
-			if isValid, response := checkDFlag(userInput); !isValid && response != "valid" {
-				utils.BoldRed.Printf("\n%s\n", response)
-				fmt.Println("")
-				os.Exit(1)
-			} else {
-				fmt.Println("GOOD FUCKING JOB.")
-			}
-		}
-
 	},
 }
 
@@ -146,4 +132,41 @@ func checkDFlag(userInput string) (bool, string) {
 	}
 
 	return true, "valid"
+}
+
+// Check all input for the `amend` command.
+func checkInput(args []string, cmd *cobra.Command) string {
+	if len(args) < 1 {
+		utils.BoldRed.Println("`amend` requires in or out.")
+		fmt.Println("")
+		os.Exit(1)
+	} else if len(args) < 2 {
+		utils.BoldRed.Println("`amend` requires a new message.")
+		fmt.Println("")
+		os.Exit(1)
+	} else {
+		utils.BoldBlue.Printf("New message: %s\n", args[len(args)-1])
+	}
+
+	userInput, _ := cmd.Flags().GetString("dayordate")
+	if len(userInput) > 1 {
+		if isValid, response := checkDFlag(userInput); !isValid && response != "valid" {
+			utils.BoldRed.Printf("\n%s\n", response)
+			fmt.Println("")
+			os.Exit(1)
+		}
+	}
+
+	return userInput
+}
+
+// Amend a shift.
+func amendTimesheet(userInput string) {
+	timesheetDirectory := modify.InitializeDirectories()
+	timesheetPath := modify.GetTimesheetPath(timesheetDirectory)
+	timesheet, err := os.OpenFile(timesheetPath, os.O_RDWR, 0755)
+	utils.CheckError("Unable to open the timesheet", err)
+
+	rows := modify.ReadTimesheet(timesheet)
+	fmt.Println(rows)
 }
