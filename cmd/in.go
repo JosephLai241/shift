@@ -33,28 +33,7 @@ You can also include these sub-commands:
 		fmt.Println(utils.InArt)
 
 		if status, err := models.CheckStatus(); !status || err != nil {
-			currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
-			utils.BoldBlue.Println("Clock-in time:", currentTime)
-			fmt.Println("")
-
-			message, _ := cmd.Flags().GetString("message")
-
-			ss := models.ShiftStatus{
-				Type:    "IN",
-				Status:  "ACTIVE",
-				Time:    currentTime,
-				Message: message,
-			}
-			ss.SetStatus()
-
-			shiftData := models.ShiftData{
-				Type:    "IN",
-				Date:    strings.Split(currentTime, " ")[0],
-				Day:     time.Now().Format("Monday"),
-				Time:    strings.Split(currentTime, " ")[1],
-				Message: message,
-			}
-			shiftData.RecordShift()
+			recordShift(cmd)
 		} else {
 			utils.BoldYellow.Print("ALREADY CLOCKED IN\n\n")
 			models.DisplayStatus()
@@ -71,14 +50,30 @@ func init() {
 		"",
 		"Include a complimentary clock-in message",
 	)
+}
 
-	// Here you will define your flags and configuration settings.
+// Record the shift.
+func recordShift(cmd *cobra.Command) {
+	currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
+	utils.BoldBlue.Println("Clock-in time:", currentTime)
+	fmt.Println("")
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// inCmd.PersistentFlags().String("foo", "", "A help for foo")
+	message, _ := cmd.Flags().GetString("message")
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// inCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	ss := models.ShiftStatus{
+		Type:    "IN",
+		Status:  "ACTIVE",
+		Time:    currentTime,
+		Message: message,
+	}
+	ss.SetStatus()
+
+	shiftData := models.ShiftData{
+		Type:    "IN",
+		Date:    strings.Split(currentTime, " ")[0],
+		Day:     time.Now().Format("Monday"),
+		Time:    strings.Split(currentTime, " ")[1],
+		Message: message,
+	}
+	shiftData.RecordShift()
 }
