@@ -89,7 +89,7 @@ shifts.db
 ```
 shift in
 
-    -m "OPTIONAL MESSAGE"
+    [-m <"OPTIONAL MESSAGE">]
 ```
 
 Use this command to clock-in. The clock-in time is then written to the timesheet or database.
@@ -101,7 +101,7 @@ You can record a message corresponding to your clock in by including the `-m` fl
 ```
 shift out
 
-    -m "OPTIONAL MESSAGE"
+    [-m <"OPTIONAL MESSAGE">]
 ```
 
 Use this command to clock-out. The clock-in time is then written to the timesheet or database.
@@ -130,9 +130,9 @@ This is a table of behaviors that can come from running this command:
 ## Amend Shift Message
 
 ```
-shift amend (in|out) "YOUR NEW MESSAGE HERE"
+shift amend (in|out) "YOUR NEW MESSAGE"
 
-    -d DATE or DAY_OF_THE_WEEK
+    [-d <DATE or DAY_OF_THE_WEEK>]
 ```
 
 Use this command to amend the most recent shift's clock-in or clock-out message.
@@ -148,11 +148,11 @@ You can amend a different record's clock-in or clock-out message by including th
 ## List Tracked Shifts
 
 ```
-shift list
+shift list [all]
 
-    -d DAY_OF_THE_WEEK
-    -m MONTH
-    -y YEAR
+    [-d <DAY_OF_THE_WEEK>]
+    [-m <MONTH>]
+    [-y <YEAR>]
 ```
 
 Use this command to list all recorded shifts for the current month.
@@ -170,9 +170,9 @@ You can display the recorded shifts for a different day, month, and/or year by i
 ```
 shift delete
 
-    -d DAY_OF_THE_WEEK
-    -m MONTH
-    -y YEAR
+    [-d <DAY_OF_THE_WEEK>]
+    [-m <MONTH>]
+    [-y <YEAR>]
 ```
 
 Use this command to delete the most recent shift.
