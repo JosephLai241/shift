@@ -56,7 +56,7 @@ func DisplayStatus(displayState bool) {
 		if _, ok := printFields[splitString[0]]; ok {
 			if splitString[0] == "STATUS" {
 				if splitString[1] == "ACTIVE" && displayState {
-					utils.BoldGreen.Add(color.Italic).Printf("%s: %s\n\n", splitString[0], splitString[1])
+					utils.BoldGreen.Add(color.Italic).Printf("%s\n\n", splitString[1])
 				}
 			} else if splitString[0] == "Clock-in Time" {
 				fmt.Printf("%s: %s\n", splitString[0], splitString[1])
