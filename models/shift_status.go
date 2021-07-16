@@ -12,6 +12,7 @@ import (
 
 	"github.com/JosephLai241/shift/utils"
 	"github.com/fatih/color"
+	"github.com/spf13/viper"
 )
 
 var cwd = utils.GetCWD()
@@ -35,31 +36,40 @@ func CheckStatus() (bool, error) {
 }
 
 // Display the current shift status set in `.shiftstatus`.
-func DisplayStatus() {
+func DisplayStatus(displayState bool) {
 	dotfile, err := os.Open(DotfileName)
 	utils.CheckError("Could not open .shiftstatus dotfile", err)
 	defer dotfile.Close()
+
+	printFields := map[string]struct{}{
+		"STATUS":            {},
+		"Clock-in Time":     {},
+		"Clock-in Message":  {},
+		"Clock-out Time":    {},
+		"Clock-out Message": {},
+	}
 
 	scanner := bufio.NewScanner(dotfile)
 	var duration string
 	for scanner.Scan() {
 		splitString := strings.Split(scanner.Text(), "=")
-		if splitString[0] == "STATUS" {
-			if splitString[1] == "ACTIVE" {
-				utils.BoldGreen.Add(color.Italic).Printf("%s: %s\n\n", splitString[0], splitString[1])
+		if _, ok := printFields[splitString[0]]; ok {
+			if splitString[0] == "STATUS" {
+				if splitString[1] == "ACTIVE" && displayState {
+					utils.BoldGreen.Add(color.Italic).Printf("%s: %s\n\n", splitString[0], splitString[1])
+				}
+			} else if splitString[0] == "Clock-in Time" {
+				fmt.Printf("%s: %s\n", splitString[0], splitString[1])
+				start, _ := time.ParseInLocation("01-02-2006 15:04:05 Monday", splitString[1], time.Now().Location())
+				durationObject := time.Since(start)
+				duration = time.Time{}.Add(durationObject).Format("15:04:05")
 			} else {
-				fmt.Printf("%s: %s\n\n", splitString[0], splitString[1])
-			}
-		} else {
-			fmt.Printf("%s: %s\n", splitString[0], splitString[1])
-			if splitString[0] == "Clock-in Time" {
-				start, _ := time.Parse("01-02-2006 15:04:05 Mon", splitString[1])
-				duration = time.Since(start).String()
+				fmt.Printf("%s: %s\n", splitString[0], splitString[1])
 			}
 		}
 	}
 	if len(duration) > 1 {
-		utils.BoldWhite.Printf("\nShift Duration: %s\n", duration)
+		utils.BoldBlue.Printf("\nCurrent Duration: %s\n", duration)
 	}
 	fmt.Println("")
 }
@@ -68,8 +78,9 @@ func DisplayStatus() {
 func formatStatus(io string, ss ShiftStatus) string {
 	status := fmt.Sprintf("STATUS=%s\n%s Time=%s\n", ss.Status, io, ss.Time)
 	if len(ss.Message) > 1 {
-		status += fmt.Sprintf("%s Message=%s", io, ss.Message)
+		status += fmt.Sprintf("%s Message=%s\n", io, ss.Message)
 	}
+	status += fmt.Sprintf("storage-type=%s\n", viper.GetString("storage-type"))
 
 	return status
 }
