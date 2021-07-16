@@ -46,20 +46,20 @@ flags is the current day of the week/date, month, and year.
 Combine these flags to to do a deep search for a particular 
 shift or shifts.
 
-You can display shifts for a different day by using the '-d'
-flag, which can take in a day of the week (ie. Monday) or a
-date (ie. 07-14-2021). The accepted date formats are:
+You can display shifts on a different day or date by using the '-d'
+flag, which accepts a day of the week (ie. Monday) or a date 
+(ie. 07-14-2021). The accepted date formats are:
 
 - MM-DD-YYYY
 - MM/DD/YYYY
 
-You can display shifts for a different month by using the
-'-m' flag, which takes in a month (ie. July). If this is the only
+You can display shifts in a different month by using the
+'-m' flag, which accepts a month (ie. July). If this is the only
 provided flag, a search will be done for the current day within
 the provided month.
 
-Finally, you can display shifts for a different year by using
-the '-y' flag, which takes in a year (ie. 2021). Like the '-m'
+Finally, you can display shifts in a different year by using
+the '-y' flag, which accepts a year (ie. 2021). Like the '-m'
 flag, a search will be done for the current day and month within
 the provided year if this is the only provided flag.
 
@@ -74,13 +74,7 @@ search for a particular shift or shifts.
 			subCommand = checkOptionalCommand(args)
 		}
 
-		dayOrDate, _ := cmd.Flags().GetString("dayordate")
-		month, _ := cmd.Flags().GetString("month")
-		year, _ := cmd.Flags().GetString("year")
-
-		amendDayOrDate(&dayOrDate)
-		amendMonth(&dayOrDate, month)
-		amendYear(&dayOrDate, year)
+		dayOrDate, month, year := amendFlags(cmd)
 
 		switch storageType := viper.GetString("storage-type"); storageType {
 		case "timesheet":
