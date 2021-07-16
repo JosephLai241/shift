@@ -8,7 +8,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-// Display table with the new changes.
+// Display table with shift data.
 func Display(amendRow [][]string) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{
