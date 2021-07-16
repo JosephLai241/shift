@@ -69,7 +69,7 @@ func DisplayStatus(displayState bool) {
 		}
 	}
 	if len(duration) > 1 {
-		utils.BoldBlue.Printf("\nCurrent Duration: %s\n", duration)
+		utils.BoldBlue.Printf("\nDuration: %s\n", duration)
 	}
 	fmt.Println("")
 }
