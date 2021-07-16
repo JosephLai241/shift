@@ -44,7 +44,7 @@ You can also include these sub-commands:
 			}
 		} else {
 			utils.BoldYellow.Print("ALREADY CLOCKED IN\n\n")
-			models.DisplayStatus()
+			models.DisplayStatus(true)
 		}
 	},
 }
@@ -62,7 +62,7 @@ func init() {
 
 // Record clock-in in the timesheet.
 func recordInTimesheet(message string) {
-	currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
+	currentTime := time.Now().Format("01-02-2006 15:04:05 Monday")
 	utils.BoldBlue.Println("Clock-in time:", currentTime)
 	fmt.Println("")
 
@@ -77,7 +77,7 @@ func recordInTimesheet(message string) {
 	shiftData := models.ShiftData{
 		Type:    "IN",
 		Date:    strings.Split(currentTime, " ")[0],
-		Day:     time.Now().Format("Monday"),
+		Day:     strings.Split(currentTime, " ")[2],
 		Time:    strings.Split(currentTime, " ")[1],
 		Message: message,
 	}

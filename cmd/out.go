@@ -4,7 +4,6 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/JosephLai241/shift/models"
@@ -64,8 +63,8 @@ func init() {
 
 // Record clock-out in the timesheet.
 func recordOutTimesheet(message string) {
-	currentTime := time.Now().Format("01-02-2006 15:04:05 Mon")
-	models.DisplayStatus()
+	currentTime := time.Now().Format("01-02-2006 15:04:05 Monday")
+	models.DisplayStatus(false)
 
 	ss := models.ShiftStatus{
 		Type:    "OUT",
@@ -77,9 +76,9 @@ func recordOutTimesheet(message string) {
 
 	shiftData := models.ShiftData{
 		Type:    "OUT",
-		Date:    strings.Split(currentTime, " ")[0],
-		Day:     time.Now().Format("Monday"),
-		Time:    strings.Split(currentTime, " ")[1],
+		Date:    "",
+		Day:     "",
+		Time:    currentTime,
 		Message: message,
 	}
 	shiftData.RecordShift()
