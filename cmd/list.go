@@ -20,7 +20,7 @@ import (
 // listCmd represents the list command.
 var listCmd = &cobra.Command{
 	Use:   "list [all]",
-	Short: "A brief description of your command",
+	Short: "Display recorded shifts",
 	Long: `
  _ _     _   
 | |_|___| |_ 
@@ -28,20 +28,20 @@ var listCmd = &cobra.Command{
 |_|_|___|_|
 
 Use this command to list recorded shifts. This command is
-fairly versatile - you can list records based on day or date, 
-month, and/or year.
+fairly versatile - you can list records based on a day of the
+week or date, month, and/or year.
 
-Using list without additional command or flags will display a
+Using list without additional commands or flags will display a
 table containing shifts recorded for the current day.
 
-The optional 'all' command following the parent 'list' command
-will display all recorded shifts for the target month. You can
-combine the 'all' command with the '-m' flag to display all
-recorded shifts in a different month (default is the current
-month). Information for using the '-m' flag is provided below.
+The optional positional argument 'all' following the parent 'list' 
+command will display all recorded shifts for the target month. 
+You can combine the 'all' argument with the '-m' flag to display all
+recorded shifts in a different month. Information for using the 
+'-m' flag is provided below.
 
 There are three optional flags you can use: the '-d', '-m', 
-and '-y' flags. These flags denote the target day of the week/date, 
+and '-y' flags. These flags denote the target day of the week or date, 
 month, and year respectively. The default value for all of these 
 flags is the current day of the week/date, month, and year. 
 Combine these flags to to do a deep search for a particular 
@@ -51,8 +51,8 @@ You can display shifts for a different day by using the '-d'
 flag, which can take in a day of the week (ie. Monday) or a
 date (ie. 07-14-2021). The accepted date formats are:
 
-* MM-DD-YYYY
-* MM/DD/YYYY
+- MM-DD-YYYY
+- MM/DD/YYYY
 
 You can display shifts for a different month by using the
 '-m' flag, which takes in a month (ie. July). If this is the only
