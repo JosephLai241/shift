@@ -78,7 +78,7 @@ search for a particular shift or shifts.
 
 		switch storageType := viper.GetString("storage-type"); storageType {
 		case "timesheet":
-			timesheetList(dayOrDate, month, subCommand, year)
+			listShifts(dayOrDate, month, subCommand, year)
 		case "database":
 			fmt.Println("DATABASE SELECTED")
 		}
@@ -151,7 +151,7 @@ func listMatches(dayOrDate string, matches [][]string, month string, year string
 }
 
 // Pull and list records from timesheets.
-func timesheetList(dayOrDate string, month string, subCommand string, year string) {
+func listShifts(dayOrDate string, month string, subCommand string, year string) {
 	month = strings.Title(month)
 
 	timesheet, err := getTimesheetByDFlags(month, false, year)
