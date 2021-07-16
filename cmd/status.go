@@ -36,9 +36,9 @@ be displayed, if applicable.
 		} else if !status {
 			utils.BoldYellow.Print("`shift` is currently inactive. Please clock-in.\n\n")
 			utils.BoldWhite.Print("Displaying last clock-out information.\n\n")
-			models.DisplayStatus()
+			models.DisplayStatus(true)
 		} else {
-			models.DisplayStatus()
+			models.DisplayStatus(true)
 		}
 	},
 }
