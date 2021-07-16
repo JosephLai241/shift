@@ -25,9 +25,10 @@ var outCmd = &cobra.Command{
 Use this command to clock-out. The current time will be
 recorded to the timesheet.
 
-You can also include these sub-commands:
-
-* [-m MESSAGE] - include a message when clocking out
+You can also include a clock-out message by including the '-m' flag
+and typing your message in quotes. If you are familiar with using git
+from the command line, this is identical to how the 'git commit -m' 
+command functions.
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(utils.OutArt)
