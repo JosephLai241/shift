@@ -22,13 +22,40 @@ var rootCmd = &cobra.Command{
 |___|_|_|_|_| |_|
 
 shift is a command-line application designed for contractors/remote workers
-who need to keep track of their own shift data. shift will record:
+who need to keep track of their own working hours.
 
-* the current date
-* clock-in time
-* clock-out time
-* shift duration
-* any messages associated with a clock-in or clock-out command call
+This program will perform CRUD operations on your local machine for the following:
+
+- clock-in time
+- clock-out time
+- shift duration
+- any messages associated with a clock-in or clock-out command call
+
+The commands you will likely interact with most are:
+
+- in
+- status
+- out
+
+There are additional commands that may be very useful to you as your records grow
+in size. These commands are:
+
+- amend
+- list
+- delete
+
+Many of the commands included in this program contain additional, optional flags
+that provide granular control over operations such as amending a record's clock-in
+or clock-out message, listing stored records, or deleting a record. I strongly
+recommend looking at the help menu for each command to fully take advantage of
+the features included for each. You can do so by running 'shift help [COMMAND_NAME]'.
+
+By default, this program will create a directory in your current working
+directory named 'shifts' and record shift data into CSV files labeled with
+the month. You can modify the 'storage-type' variable within '.shiftconfig.yml'
+to record shifts in a local SQLite instance named 'shifts.db' (instead of writing
+to the default timesheets) by changing the default value from 'timesheet' to 
+'database' - these are the only accepted values.
 	`,
 }
 
