@@ -51,12 +51,12 @@ This tool is capable of storing shift data into CSV spreadsheets or a local SQLi
 
 ## Storing Data Into Timesheets
 
-The directory `shift_timesheets/CURRENT_YEAR` is created within the current working directory. User-entered information is then recorded into a CSV-format timesheet titled `CURRENT_MONTH.csv`, located in the `CURRENT_YEAR` directory.
+The directory `shifts/CURRENT_YEAR` is created within the current working directory. User-entered information is then recorded into a CSV-format timesheet titled `CURRENT_MONTH.csv`, located in the `CURRENT_YEAR` directory.
 
-This is an example of the `shift_timesheets` directory structure if you ran `shift` sometime during July 2021:
+This is an example of the `shifts` directory structure if you ran `shift` sometime during July 2021:
 
 ```
-shift_timesheets/
+shifts/
 └── 2021
     └── July.csv
 ```
