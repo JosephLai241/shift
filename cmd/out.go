@@ -1,4 +1,4 @@
-// Defining the `out` flag.
+// Defining the `out` command.
 
 package cmd
 
