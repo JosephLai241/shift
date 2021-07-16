@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/JosephLai241/shift/utils"
+	"github.com/spf13/cobra"
 )
 
 // Check whether the input date is valid.
@@ -159,6 +160,47 @@ func amendYear(dayOrDate *string, year string) {
 			updateDFlagSection(dayOrDate, 2, year)
 		}
 	}
+}
+
+// Extract the month and year from the `dayOrDate` flag.
+func extractByDate(dayOrDate string) (string, string) {
+	splitDate := strings.Split(dayOrDate, "-")
+	months := map[string]string{
+		"01": "January",
+		"02": "February",
+		"03": "March",
+		"04": "April",
+		"05": "May",
+		"06": "June",
+		"07": "July",
+		"08": "August",
+		"09": "September",
+		"10": "October",
+		"11": "November",
+		"12": "December",
+	}
+
+	month := months[splitDate[0]]
+	year := splitDate[2]
+
+	return month, year
+}
+
+// Get the `dayOrDate`, `month`, and `year` parameters from flag input.
+func amendFlags(cmd *cobra.Command) (string, string, string) {
+	dayOrDate, _ := cmd.Flags().GetString("dayordate")
+	month, _ := cmd.Flags().GetString("month")
+	year, _ := cmd.Flags().GetString("year")
+
+	amendDayOrDate(&dayOrDate)
+	amendMonth(&dayOrDate, month)
+	amendYear(&dayOrDate, year)
+
+	if strings.Contains(dayOrDate, "-") && dayOrDate != time.Now().Format("01-02-2006") {
+		month, year = extractByDate(dayOrDate)
+	}
+
+	return dayOrDate, month, year
 }
 
 // Get the timesheet based on the values set by date-related flags.
