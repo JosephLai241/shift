@@ -57,6 +57,9 @@ func WriteToTimesheet(file *os.File, rows [][]string) {
 // Read timesheet and extract the data into a nested list of strings.
 func ReadTimesheet(file *os.File) [][]string {
 	reader := csv.NewReader(file)
+	if _, err := reader.Read(); err != nil {
+		utils.CheckError("Could not read the header", err)
+	}
 	rows, err := reader.ReadAll()
 	utils.CheckError("Could not read timesheet", err)
 
