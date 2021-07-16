@@ -1,11 +1,10 @@
-//
+// Defining the `list` command.
 
 package cmd
 
 import (
 	"errors"
 	"fmt"
-	"os"
 	"strings"
 	"time"
 
@@ -129,9 +128,9 @@ func checkOptionalCommand(args []string) string {
 	return strings.ToLower(args[0])
 }
 
-// Find matches based on search day or date.
-func listDMatches(fixedSearchParam string, rows [][]string) {
-	_, matches := models.FindMatches(fixedSearchParam, rows)
+// Find matches based on search day or date and format the records.
+func getAndFormatMatches(dayOrDate string, rows [][]string) [][]string {
+	_, matches := models.FindMatches(dayOrDate, rows)
 	if len(matches) == 0 {
 		utils.CheckError(
 			"Error",
@@ -143,6 +142,17 @@ func listDMatches(fixedSearchParam string, rows [][]string) {
 		matches[i] = row[1:]
 	}
 
+	return matches
+}
+
+// List matches.
+func listMatches(dayOrDate string, matches [][]string, month string, year string) {
+	if strings.Contains(dayOrDate, "-") {
+		utils.BoldBlue.Printf("Displaying shifts recorded on %s.\n\n", dayOrDate)
+	} else {
+		utils.BoldBlue.Printf("Displaying shifts recorded on a %s within %s %s.\n\n", dayOrDate, month, year)
+	}
+
 	views.Display(matches)
 }
 
@@ -150,8 +160,7 @@ func listDMatches(fixedSearchParam string, rows [][]string) {
 func timesheetList(dayOrDate string, month string, subCommand string, year string) {
 	month = strings.Title(month)
 
-	timesheetPath := fmt.Sprintf("%s/shifts/%s/%s.csv", utils.GetCWD(), year, month)
-	timesheet, err := os.OpenFile(timesheetPath, os.O_RDWR, 0755)
+	timesheet, err := getTimesheetByDFlags(month, year)
 	if err != nil {
 		utils.CheckError(
 			fmt.Sprintf("An error occurred when listing shifts recorded in %s %s", month, year),
@@ -160,22 +169,20 @@ func timesheetList(dayOrDate string, month string, subCommand string, year strin
 	}
 
 	if rows := modify.ReadTimesheet(timesheet); len(rows) == 0 {
-		utils.CheckError(
-			"Error",
-			errors.New("no shifts were found based on your search parameters"),
-		)
+		var errorMessage error
+		if dayOrDate != time.Now().Format("01-02-2006") || month != time.Now().Format("January") || year != time.Now().Format("2006") {
+			errorMessage = errors.New("no shifts were found based on your search parameters")
+		} else {
+			errorMessage = errors.New("no shifts were recorded today")
+		}
+		utils.CheckError("Error", errorMessage)
 	} else {
 		if subCommand == "all" {
 			utils.BoldBlue.Printf("Displaying all shifts recorded in %s %s.\n\n", month, year)
 			views.Display(rows)
 		} else {
-			if strings.Contains(dayOrDate, "-") {
-				utils.BoldBlue.Printf("Displaying shifts recorded on %s.\n\n", dayOrDate)
-			} else {
-				utils.BoldBlue.Printf("Displaying shifts recorded on a %s within %s %s.\n\n", dayOrDate, month, year)
-			}
-
-			listDMatches(dayOrDate, rows)
+			matches := getAndFormatMatches(dayOrDate, rows)
+			listMatches(dayOrDate, matches, month, year)
 		}
 	}
 }
