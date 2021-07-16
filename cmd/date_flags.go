@@ -1,11 +1,16 @@
-// Storing functions that may be reused to check flags.
+// Operations pertaining to the date-related flags (`-d`, `-m`, `-y`).
 
 package cmd
 
 import (
+	"errors"
+	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/JosephLai241/shift/utils"
 )
 
 // Check whether the input date is valid.
@@ -111,4 +116,67 @@ func checkMonth(searchMonth string) (bool, string, string) {
 	}
 
 	return true, monthNum, "valid"
+}
+
+// Amend the `dayOrDate` parameter if applicable.
+func amendDayOrDate(dayOrDate *string) {
+	if strings.Contains(*dayOrDate, "/") {
+		*dayOrDate = strings.ReplaceAll(*dayOrDate, "/", "-")
+	}
+
+	if isValid, fixedDayOrDate, response := checkDFlag(*dayOrDate); !isValid && response != "valid" {
+		utils.CheckError("`-d` flag error", errors.New(response))
+	} else {
+		*dayOrDate = fixedDayOrDate
+	}
+}
+
+// Update a section of the date within the `dayOrDate` string.
+func updateDFlagSection(dayOrDate *string, index int, newString string) {
+	splitDFlag := strings.Split(*dayOrDate, "-")
+	splitDFlag[index] = newString
+	*dayOrDate = strings.Join(splitDFlag, "-")
+}
+
+// Amend the `dayOrDate` parameter if the `-m` flag is provided.
+func amendMonth(dayOrDate *string, month string) {
+	if month != time.Now().Format("January") {
+		month = strings.Title(month)
+		if isValid, monthNum, response := checkMonth(month); !isValid {
+			utils.CheckError("`-m` flag error", errors.New(response))
+		} else {
+			if strings.Contains(*dayOrDate, "-") {
+				updateDFlagSection(dayOrDate, 0, monthNum)
+			}
+		}
+	}
+}
+
+// Amend the `dayOrDate` parameter if the `-m` flag is provided.
+func amendYear(dayOrDate *string, year string) {
+	if year != time.Now().Format("2006") {
+		if strings.Contains(*dayOrDate, "-") {
+			updateDFlagSection(dayOrDate, 2, year)
+		}
+	}
+}
+
+// Get the timesheet based on the values set by date-related flags.
+func getTimesheetByDFlags(month string, modify bool, year string) (*os.File, error) {
+	month = strings.Title(month)
+	timesheetPath := fmt.Sprintf(
+		"%s/shifts/%s/%s.csv",
+		utils.GetCWD(),
+		year,
+		month)
+
+	var timesheet *os.File
+	var err error
+	if modify {
+		timesheet, err = os.OpenFile(timesheetPath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	} else {
+		timesheet, err = os.OpenFile(timesheetPath, os.O_RDWR, 0755)
+	}
+
+	return timesheet, err
 }
