@@ -58,11 +58,10 @@ func (shiftData ShiftData) recordIn(overwriteFile *os.File, rows [][]string) {
 func (shiftData ShiftData) recordOut(overwriteFile *os.File, rows [][]string) {
 	for i, row := range rows {
 		if i == len(rows)-1 {
-			startString := fmt.Sprintf("%s %s %s", row[0], row[1], row[2])
-			endString := fmt.Sprintf("%s %s", time.Now().Format("01-02-2006 Monday"), shiftData.Time)
+			startString := fmt.Sprintf("%s %s %s", row[0], row[2], row[1])
 
-			startTime, _ := time.Parse("01-02-2006 Monday 15:04:05", startString)
-			endTime, _ := time.Parse("01-02-2006 Monday 15:04:05", endString)
+			startTime, _ := time.ParseInLocation("01-02-2006 15:04:05 Monday", startString, time.Now().Location())
+			endTime, _ := time.ParseInLocation("01-02-2006 15:04:05 Monday", shiftData.Time, time.Now().Location())
 
 			duration := endTime.Sub(startTime)
 
