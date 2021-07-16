@@ -160,7 +160,7 @@ func listMatches(dayOrDate string, matches [][]string, month string, year string
 func timesheetList(dayOrDate string, month string, subCommand string, year string) {
 	month = strings.Title(month)
 
-	timesheet, err := getTimesheetByDFlags(month, year)
+	timesheet, err := getTimesheetByDFlags(month, false, year)
 	if err != nil {
 		utils.CheckError(
 			fmt.Sprintf("An error occurred when listing shifts recorded in %s %s", month, year),
@@ -177,6 +177,8 @@ func timesheetList(dayOrDate string, month string, subCommand string, year strin
 		}
 		utils.CheckError("Error", errorMessage)
 	} else {
+		rows = rows[1:]
+
 		if subCommand == "all" {
 			utils.BoldBlue.Printf("Displaying all shifts recorded in %s %s.\n\n", month, year)
 			views.Display(rows)
