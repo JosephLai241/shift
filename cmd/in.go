@@ -24,11 +24,12 @@ var inCmd = &cobra.Command{
 |_|_|_|
 
 Use this command to clock-in. The current time will be
-recorded to the timesheet.
+recorded to the timesheet or database.
 
-You can also include these sub-commands:
-
-* [-m "YOUR MESSAGE HERE"] - include a message when clocking in
+You can also include a clock-in message by including the '-m' flag
+and typing your message in quotes. If you are familiar with using git
+from the command line, this is identical to how the 'git commit -m' 
+command functions.
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(utils.InArt)
@@ -55,7 +56,7 @@ func init() {
 
 	inCmd.PersistentFlags().StringP(
 		"message", "m",
-		"",
+		"Clocked in",
 		"Include a complimentary clock-in message",
 	)
 }
