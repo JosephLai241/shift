@@ -28,10 +28,10 @@ var amendCmd = &cobra.Command{
 |__,|_|_|_|___|_|_|___|
 
 Use this command to amend a recorded shift's clock-in or clock-out
-message. This command is fairly versatile - you can list records 
+message. This command is fairly versatile - you can search for records 
 based on a day of the week or date, month, and/or year.
 
-Using list without additional commands or flags will display a
+Using amend without additional commands or flags will display a
 table containing shifts recorded for the current day.
 
 There are three optional flags you can use: the '-d', '-m', 
