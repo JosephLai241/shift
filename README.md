@@ -137,7 +137,9 @@ This is a table of behaviors that can come from running this command:
 ```
 shift amend (in|out) "YOUR NEW MESSAGE"
 
-    [-d <DATE or DAY_OF_THE_WEEK>]
+    [-d <DATE_or_DAY_OF_THE_WEEK>]
+    [-m <MONTH>]
+    [-y <YEAR>]
 ```
 
 Use this command to amend the most recent shift's clock-in or clock-out message.
