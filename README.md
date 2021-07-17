@@ -96,6 +96,8 @@ Use this command to clock-in. The clock-in time is then written to the timesheet
 
 You can record a message corresponding to your clock in by including the `-m` flag.
 
+The status of your current shift will be displayed if you attempt to run this command when already clocked in.
+
 ## Clocking Out
 
 ```
@@ -107,6 +109,10 @@ shift out
 Use this command to clock-out. The clock-in time is then written to the timesheet or database.
 
 You can record a message corresponding to your clock in by including the `-m` flag.
+
+Your clock-in time and message as well as your shift duration will be displayed.
+
+A warning is displayed if you attempt to run this command when already clocked out.
 
 ## Check Current Status
 
@@ -120,12 +126,11 @@ This is a table of behaviors that can come from running this command:
 
 | Currently Clocked In | Clocked Out/Inactive       | No Shifts Tracked |
 |----------------------|----------------------------|-------------------|
-| `CLOCK_IN_TIME`      | `LAST_CLOCK_OUT_TIME`      | **Error message   |
-| * `CLOCK_IN_MESSAGE` | * `LAST_CLOCK_OUT_MESSAGE` |                   |
+| `CLOCK_IN_TIME`      | `LAST_CLOCK_OUT_TIME`      | *Error message    |
+| `CLOCK_IN_MESSAGE`   | `LAST_CLOCK_OUT_MESSAGE`   |                   |
+| `Duration`           |                            |                   |
 
-\* Only displayed if included during clock-in/out.
-
-\** If you have never run `shift` prior to running the `status` command, an error message will inform you to track a shift before attempting to run the command.
+\* If you have never run `shift` prior to running the `status` command, an error message will inform you to track a shift before attempting to run the command.
 
 ## Amend Shift Message
 
@@ -137,29 +142,35 @@ shift amend (in|out) "YOUR NEW MESSAGE"
 
 Use this command to amend the most recent shift's clock-in or clock-out message.
 
-You can amend a different record's clock-in or clock-out message by including the `-d` flag. 
+If used without any optional flags, `shift` will target the most recently recorded shift on the current day.
 
-> ***NOTE:*** The `-d` flag accepts either a day of the week or a date.
->
-> Type the entire day of the week if you are searching by day.
->
-> The accepted date format is MM/DD/YYYY.
+You can search for recorded shifts on a different day, month, and/or year by including the `-d`, `-m`, and/or `-y` flags. Combine these flags in addition to `all` to narrow your search.
+
+> ***NOTE:*** The `-d` flag accepts either a day of the week or a date. Type the entire day of the week, ie. Monday, or provide the date using the MM-DD-YYYY or MM/DD/YYYY format.
+
+> ***NOTE:*** Type the entire month name when using the `-m` flag, ie. January.
+
+> ***NOTE:*** Type the entire year in YYYY format when using the `-y` flag, ie. 2021.
 
 ## List Tracked Shifts
 
 ```
 shift list [all]
 
-    [-d <DAY_OF_THE_WEEK>]
+    [-d <DATE_or_DAY_OF_THE_WEEK>]
     [-m <MONTH>]
     [-y <YEAR>]
 ```
 
-Use this command to list all recorded shifts for the current month.
+Use this command to display recorded shifts.
 
-You can display the recorded shifts for a different day, month, and/or year by including the `-d`, `-m`, and/or `-y` flags. Combine these flags to narrow your search.
+If used without the optional positional argument `all`, `shift` will display all shifts recorded on the current day.
 
-> ***NOTE:*** Type the entire day of the week when using the `-d` flag, ie. Monday.
+You can list all recorded shifts within the current month by including the `all` argument.
+
+You can display the recorded shifts for a different day, month, and/or year by including the `-d`, `-m`, and/or `-y` flags. Combine these flags in addition to `all` to narrow your search.
+
+> ***NOTE:*** The `-d` flag accepts either a day of the week or a date. Type the entire day of the week, ie. Monday, or provide the date using the MM-DD-YYYY or MM/DD/YYYY format.
 
 > ***NOTE:*** Type the entire month name when using the `-m` flag, ie. January.
 
@@ -175,11 +186,13 @@ shift delete
     [-y <YEAR>]
 ```
 
-Use this command to delete the most recent shift.
+Use this command to delete a recorded shift.
 
-You can delete a different shift by including the `-d`, `-m`, and/or `-y` flags. Combine these flags to narrow your search.
+If used without any optional flags, `shift` will target the most recently recorded shift on the current day.
 
-> ***NOTE:*** Type the entire day of the week when using the `-d` flag, ie. Monday.
+You can search for recorded shifts on a different day, month, and/or year by including the `-d`, `-m`, and/or `-y` flags. Combine these flags in addition to `all` to narrow your search.
+
+> ***NOTE:*** The `-d` flag accepts either a day of the week or a date. Type the entire day of the week, ie. Monday, or provide the date using the MM-DD-YYYY or MM/DD/YYYY format.
 
 > ***NOTE:*** Type the entire month name when using the `-m` flag, ie. January.
 
