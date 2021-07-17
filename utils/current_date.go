@@ -1,4 +1,4 @@
-// Current month and year variables.
+// Current date, month, and year variables.
 
 package utils
 
