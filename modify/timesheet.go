@@ -6,7 +6,6 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/JosephLai241/shift/utils"
 )
@@ -15,7 +14,7 @@ import (
 // Returns a string denoting the path to the timesheet directory.
 func InitializeDirectories() string {
 	cwd := utils.GetCWD()
-	timesheetDirectory := fmt.Sprintf("%s/shifts/%s", cwd, time.Now().Format("2006"))
+	timesheetDirectory := fmt.Sprintf("%s/shifts/%s", cwd, utils.CurrentYear)
 	os.MkdirAll(timesheetDirectory, os.ModePerm)
 
 	return timesheetDirectory
@@ -23,7 +22,7 @@ func InitializeDirectories() string {
 
 // Create the path to the timesheet.
 func GetTimesheetPath(timesheetDirectory string) string {
-	currentMonthYear := fmt.Sprintf("%s.csv", time.Now().Format("January"))
+	currentMonthYear := fmt.Sprintf("%s.csv", utils.CurrentMonth)
 	timesheetPath := fmt.Sprintf("%s/%s", timesheetDirectory, currentMonthYear)
 
 	return timesheetPath
