@@ -93,7 +93,7 @@ func init() {
 	)
 	listCmd.Flags().StringP(
 		"month", "m",
-		time.Now().Format("January"),
+		utils.CurrentMonth,
 		"List records in a specific month",
 	)
 	listCmd.Flags().StringP(
@@ -162,7 +162,7 @@ func listShiftsTimesheet(dayOrDate string, month string, subCommand string, year
 
 	if rows := modify.ReadTimesheet(timesheet); len(rows) == 0 {
 		var errorMessage error
-		if dayOrDate != time.Now().Format("01-02-2006") || month != time.Now().Format("January") || year != time.Now().Format("2006") {
+		if dayOrDate != time.Now().Format("01-02-2006") || month != utils.CurrentMonth || year != time.Now().Format("2006") {
 			errorMessage = errors.New("no shifts were found based on your search parameters")
 		} else {
 			errorMessage = errors.New("no shifts were recorded today")

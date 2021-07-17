@@ -82,7 +82,7 @@ func init() {
 	)
 	deleteCmd.Flags().StringP(
 		"month", "m",
-		time.Now().Format("January"),
+		utils.CurrentMonth,
 		"Search records in a month",
 	)
 	deleteCmd.Flags().StringP(

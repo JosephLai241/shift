@@ -141,7 +141,7 @@ func updateDFlagSection(dayOrDate *string, index int, newString string) {
 
 // Amend the `dayOrDate` parameter if the `-m` flag is provided.
 func amendMonth(dayOrDate *string, month string) {
-	if month != time.Now().Format("January") {
+	if month != utils.CurrentMonth {
 		month = strings.Title(month)
 		if isValid, monthNum, response := checkMonth(month); !isValid {
 			utils.CheckError("`-m` flag error", errors.New(response))
