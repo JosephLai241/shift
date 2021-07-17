@@ -45,9 +45,29 @@ command functions.
 			fmt.Println("")
 		} else {
 			runStorageCheck()
+
+			currentTime := time.Now().Format("01-02-2006 15:04:05 Monday")
+			models.DisplayStatus(false)
+
+			ss := models.ShiftStatus{
+				Type:    "OUT",
+				Status:  "READY",
+				Time:    currentTime,
+				Message: message,
+			}
+			ss.SetStatus()
+
+			shiftData := models.ShiftData{
+				Type:    "OUT",
+				Date:    "",
+				Day:     "",
+				Time:    currentTime,
+				Message: message,
+			}
+
 			modify.CRUD(
-				func() { recordOutTimesheet(message) },
-				func() { recordOutDatabase(message) },
+				func() { shiftData.RecordToTimesheet() },
+				func() { shiftData.RecordToDB() },
 			)
 		}
 	},
@@ -66,7 +86,7 @@ func init() {
 
 // Check the storage setting written in `.shiftstatus`.
 func runStorageCheck() {
-	if storageType := models.CheckStorageType(); storageType != viper.GetString("storage-type") {
+	if storageType := models.GetCurrentStorageType(); storageType != viper.GetString("storage-type") {
 		issueString := "The `storage-type` value was changed while you were clocked-in."
 		previousString := fmt.Sprintf("\n\nThe previous value was set at: %s\n", utils.BoldWhite.Sprint(storageType))
 		currentString := fmt.Sprintf("But the current value is set at: %s\n\n", utils.BoldWhite.Sprint(viper.GetString("storage-type")))
@@ -79,32 +99,4 @@ func runStorageCheck() {
 			),
 		)
 	}
-}
-
-// Record clock-out in the timesheet.
-func recordOutTimesheet(message string) {
-	currentTime := time.Now().Format("01-02-2006 15:04:05 Monday")
-	models.DisplayStatus(false)
-
-	ss := models.ShiftStatus{
-		Type:    "OUT",
-		Status:  "READY",
-		Time:    currentTime,
-		Message: message,
-	}
-	ss.SetStatus()
-
-	shiftData := models.ShiftData{
-		Type:    "OUT",
-		Date:    "",
-		Day:     "",
-		Time:    currentTime,
-		Message: message,
-	}
-	shiftData.RecordShift()
-}
-
-// Record clock-out in the database.
-func recordOutDatabase(message string) {
-	fmt.Println("DATABASE SELECTED")
 }
