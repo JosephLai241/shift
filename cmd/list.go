@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/JosephLai241/shift/models"
 	"github.com/JosephLai241/shift/modify"
@@ -88,7 +87,7 @@ func init() {
 
 	listCmd.Flags().StringP(
 		"dayordate", "d",
-		time.Now().Format("01-02-2006"),
+		utils.CurrentDate,
 		"Narrow your search by the day of the week or by a date",
 	)
 	listCmd.Flags().StringP(
@@ -98,7 +97,7 @@ func init() {
 	)
 	listCmd.Flags().StringP(
 		"year", "y",
-		time.Now().Format("2006"),
+		utils.CurrentYear,
 		"List records in a specific year",
 	)
 }
@@ -162,7 +161,7 @@ func listShiftsTimesheet(dayOrDate string, month string, subCommand string, year
 
 	if rows := modify.ReadTimesheet(timesheet); len(rows) == 0 {
 		var errorMessage error
-		if dayOrDate != time.Now().Format("01-02-2006") || month != utils.CurrentMonth || year != time.Now().Format("2006") {
+		if dayOrDate != utils.CurrentDate || month != utils.CurrentMonth || year != utils.CurrentYear {
 			errorMessage = errors.New("no shifts were found based on your search parameters")
 		} else {
 			errorMessage = errors.New("no shifts were recorded today")

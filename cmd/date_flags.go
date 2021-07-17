@@ -8,7 +8,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
@@ -43,7 +42,7 @@ func checkDate(splitDate []string) (bool, string) {
 	if yearErr != nil {
 		return false, "Invalid year."
 	}
-	currentYear, _ := strconv.Atoi(time.Now().Format("2006"))
+	currentYear, _ := strconv.Atoi(utils.CurrentYear)
 
 	if dayStruct, ok := validMonths[splitDate[0]]; !ok {
 		return false, "Invalid month."
@@ -155,7 +154,7 @@ func amendMonth(dayOrDate *string, month string) {
 
 // Amend the `dayOrDate` parameter if the `-m` flag is provided.
 func amendYear(dayOrDate *string, year string) {
-	if year != time.Now().Format("2006") {
+	if year != utils.CurrentYear {
 		if strings.Contains(*dayOrDate, "-") {
 			updateDFlagSection(dayOrDate, 2, year)
 		}
@@ -196,7 +195,7 @@ func formatFlags(cmd *cobra.Command) (string, string, string) {
 	amendMonth(&dayOrDate, month)
 	amendYear(&dayOrDate, year)
 
-	if strings.Contains(dayOrDate, "-") && dayOrDate != time.Now().Format("01-02-2006") {
+	if strings.Contains(dayOrDate, "-") && dayOrDate != utils.CurrentDate {
 		month, year = extractByDate(dayOrDate)
 	}
 

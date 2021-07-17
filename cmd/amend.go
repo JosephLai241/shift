@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/JosephLai241/shift/models"
 	"github.com/JosephLai241/shift/modify"
@@ -79,7 +78,7 @@ func init() {
 
 	amendCmd.Flags().StringP(
 		"dayordate", "d",
-		time.Now().Format("01-02-2006"),
+		utils.CurrentDate,
 		"Search records on a day of the week or date",
 	)
 	amendCmd.Flags().StringP(
@@ -89,7 +88,7 @@ func init() {
 	)
 	amendCmd.Flags().StringP(
 		"year", "y",
-		time.Now().Format("2006"),
+		utils.CurrentYear,
 		"Search records in a year",
 	)
 }
