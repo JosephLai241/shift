@@ -68,7 +68,7 @@ search for a particular shift or shifts.
 
 		modify.CRUD(
 			func() { amendTimesheet(args, dayOrDate, month, year) },
-			func() { amendDatabase() },
+			func() { amendDatabase(args, dayOrDate, month, year) },
 		)
 	},
 }
@@ -84,7 +84,7 @@ func init() {
 	)
 	amendCmd.Flags().StringP(
 		"month", "m",
-		time.Now().Format("January"),
+		utils.CurrentMonth,
 		"Search records in a month",
 	)
 	amendCmd.Flags().StringP(
@@ -187,6 +187,6 @@ func amendTimesheet(args []string, dayOrDate string, month string, year string) 
 }
 
 // Amend a shift in the database.
-func amendDatabase() {
+func amendDatabase(args []string, dayOrDate string, month string, year string) {
 	fmt.Println("amendDatabase() called!")
 }
