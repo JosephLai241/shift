@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// statusCmd represents the status command
+// statusCmd represents the status command.
 var statusCmd = &cobra.Command{
 	Use:   "status",
 	Short: "Check the current status of your shift",
@@ -22,9 +22,11 @@ var statusCmd = &cobra.Command{
 
 Use this command to check the current status of your shift.
 
-The clock-in time and shift duration will always be displayed.
-The message that was included with the clock-in will also 
-be displayed, if applicable.
+The clock-in time, message, and shift duration is
+displayed when shift is currently active.
+
+If shift is currently inactive, a warning message as well
+as the previous clock-out time and message is displayed.
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(utils.StatusArt)
@@ -43,6 +45,7 @@ be displayed, if applicable.
 	},
 }
 
+// Add the `status` command and its sub-flags to the base command.
 func init() {
 	rootCmd.AddCommand(statusCmd)
 }
