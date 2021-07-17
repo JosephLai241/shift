@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/JosephLai241/shift/models"
+	"github.com/JosephLai241/shift/modify"
 	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // outCmd represents the out command
@@ -42,12 +42,10 @@ command functions.
 			utils.BoldYellow.Println("`shift` is currently inactive. Please clock-in.")
 			fmt.Println("")
 		} else {
-			switch storageType := viper.GetString("storage-type"); storageType {
-			case "timesheet":
-				recordOutTimesheet(message)
-			case "database":
-				recordOutDatabase(message)
-			}
+			modify.CRUD(
+				func() { recordOutTimesheet(message) },
+				func() { recordOutDatabase(message) },
+			)
 		}
 	},
 }

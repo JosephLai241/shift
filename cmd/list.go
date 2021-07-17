@@ -13,7 +13,6 @@ import (
 	"github.com/JosephLai241/shift/utils"
 	"github.com/JosephLai241/shift/views"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // listCmd represents the list command.
@@ -76,12 +75,10 @@ search for a particular shift or shifts.
 
 		dayOrDate, month, year := amendFlags(cmd)
 
-		switch storageType := viper.GetString("storage-type"); storageType {
-		case "timesheet":
-			listShifts(dayOrDate, month, subCommand, year)
-		case "database":
-			fmt.Println("DATABASE SELECTED")
-		}
+		modify.CRUD(
+			func() { listShiftsTimesheet(dayOrDate, month, subCommand, year) },
+			func() { listShiftsDatabase() },
+		)
 	},
 }
 
@@ -151,7 +148,7 @@ func listMatches(dayOrDate string, matches [][]string, month string, year string
 }
 
 // Pull and list records from timesheets.
-func listShifts(dayOrDate string, month string, subCommand string, year string) {
+func listShiftsTimesheet(dayOrDate string, month string, subCommand string, year string) {
 	month = strings.Title(month)
 
 	timesheet, err := getTimesheetByDFlags(month, false, year)
@@ -181,4 +178,9 @@ func listShifts(dayOrDate string, month string, subCommand string, year string) 
 			listMatches(dayOrDate, matches, month, year)
 		}
 	}
+}
+
+// Pull and list records from the database.
+func listShiftsDatabase() {
+	fmt.Println("listShiftsDatabase() called!")
 }

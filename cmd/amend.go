@@ -14,7 +14,6 @@ import (
 	"github.com/JosephLai241/shift/utils"
 	"github.com/JosephLai241/shift/views"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // amendCmd represents the amend command
@@ -67,12 +66,10 @@ search for a particular shift or shifts.
 		checkArgs(args)
 		dayOrDate, month, year := amendFlags(cmd)
 
-		switch storageType := viper.GetString("storage-type"); storageType {
-		case "timesheet":
-			amendTimesheet(args, dayOrDate, month, year)
-		case "database":
-			fmt.Println("DATABASE SELECTED")
-		}
+		modify.CRUD(
+			func() { amendTimesheet(args, dayOrDate, month, year) },
+			func() { amendDatabase() },
+		)
 	},
 }
 
@@ -154,7 +151,7 @@ func amendShift(amendRow []string, intSelection int, month string, rows [][]stri
 	modify.WriteToTimesheet(overwriteTimesheet, rows)
 }
 
-// Amend a shift.
+// Amend a shift in the timesheet.
 func amendTimesheet(args []string, dayOrDate string, month string, year string) {
 	timesheet, err := getTimesheetByDFlags(month, false, year)
 	if err != nil {
@@ -186,4 +183,9 @@ func amendTimesheet(args []string, dayOrDate string, month string, year string) 
 	}
 
 	fmt.Println("")
+}
+
+// Amend a shift in the database.
+func amendDatabase() {
+	fmt.Println("amendDatabase() called!")
 }

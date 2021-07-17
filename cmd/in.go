@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/JosephLai241/shift/models"
+	"github.com/JosephLai241/shift/modify"
 	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // inCmd represents the in command
@@ -37,12 +37,10 @@ command functions.
 		message, _ := cmd.Flags().GetString("message")
 
 		if status, err := models.CheckStatus(); !status || err != nil {
-			switch storageType := viper.GetString("storage-type"); storageType {
-			case "timesheet":
-				recordInTimesheet(message)
-			case "database":
-				recordInDatabase(message)
-			}
+			modify.CRUD(
+				func() { recordInTimesheet(message) },
+				func() { recordInDatabase(message) },
+			)
 		} else {
 			utils.BoldYellow.Print("ALREADY CLOCKED IN\n\n")
 			models.DisplayStatus(true)
