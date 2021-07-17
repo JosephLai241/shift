@@ -187,7 +187,7 @@ func extractByDate(dayOrDate string) (string, string) {
 }
 
 // Get the `dayOrDate`, `month`, and `year` parameters from flag input.
-func amendFlags(cmd *cobra.Command) (string, string, string) {
+func formatFlags(cmd *cobra.Command) (string, string, string) {
 	dayOrDate, _ := cmd.Flags().GetString("dayordate")
 	month, _ := cmd.Flags().GetString("month")
 	year, _ := cmd.Flags().GetString("year")

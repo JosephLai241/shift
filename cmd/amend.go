@@ -64,7 +64,7 @@ search for a particular shift or shifts.
 		fmt.Println(utils.AmendArt)
 
 		checkArgs(args)
-		dayOrDate, month, year := amendFlags(cmd)
+		dayOrDate, month, year := formatFlags(cmd)
 
 		modify.CRUD(
 			func() { amendTimesheet(args, dayOrDate, month, year) },

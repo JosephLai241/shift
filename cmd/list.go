@@ -73,7 +73,7 @@ search for a particular shift or shifts.
 			subCommand = checkOptionalCommand(args)
 		}
 
-		dayOrDate, month, year := amendFlags(cmd)
+		dayOrDate, month, year := formatFlags(cmd)
 
 		modify.CRUD(
 			func() { listShiftsTimesheet(dayOrDate, month, subCommand, year) },
