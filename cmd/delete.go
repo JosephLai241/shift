@@ -1,17 +1,21 @@
-//
+// Defining the `delete` command.
 
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"strings"
 	"time"
 
+	"github.com/JosephLai241/shift/models"
 	"github.com/JosephLai241/shift/modify"
 	"github.com/JosephLai241/shift/utils"
+	"github.com/JosephLai241/shift/views"
 	"github.com/spf13/cobra"
 )
 
-// deleteCmd represents the delete command
+// deleteCmd represents the delete command.
 var deleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete a recorded shift",
@@ -58,9 +62,7 @@ search for a particular shift or shifts.
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(utils.DeleteArt)
 
-		dayOrDate, month, year := amendFlags(cmd)
-		fmt.Println(dayOrDate)
-		fmt.Println(year)
+		dayOrDate, month, year := formatFlags(cmd)
 
 		modify.CRUD(
 			func() { deleteShiftTimesheet(dayOrDate, month, year) },
@@ -69,6 +71,7 @@ search for a particular shift or shifts.
 	},
 }
 
+// Add the `delete` command and its sub-flags to the base command.
 func init() {
 	rootCmd.AddCommand(deleteCmd)
 
@@ -89,9 +92,61 @@ func init() {
 	)
 }
 
+// Display the selected shift to be deleted from the timesheet.
+func displayDeletion(rows [][]string, rowNums []int) int {
+	intSelection := checkSelection(rowNums)
+	rowForDeletion := rows[intSelection]
+
+	fmt.Println("")
+	utils.BoldRed.Println("PENDING DELETION")
+	views.Display([][]string{rowForDeletion})
+
+	return intSelection
+}
+
+// Remove the selected shift from the timesheet's rows.
+func popShift(intSelection int, month string, rows [][]string, year string) {
+	rows = append(rows[:intSelection], rows[intSelection+1:]...)
+
+	overwriteTimesheet, err := getTimesheetByDFlags(month, true, year)
+	if err != nil {
+		utils.CheckError("Unable to open the timesheet to overwrite", err)
+	}
+
+	modify.WriteToTimesheet(overwriteTimesheet, rows)
+}
+
 // Delete the selected shift from the timesheet.
 func deleteShiftTimesheet(dayOrDate string, month string, year string) {
-	fmt.Println("deleteShiftTimesheet() called!")
+	timesheet, err := getTimesheetByDFlags(month, false, year)
+	if err != nil {
+		utils.CheckError(
+			fmt.Sprintf("An error occurred when listing shifts recorded in %s %s", strings.Title(month), year),
+			errors.New("no shifts were recorded"),
+		)
+	}
+
+	rows := modify.ReadTimesheet(timesheet)
+	fmt.Println("")
+
+	switch rowNums, matches := models.FindMatches(dayOrDate, rows); len(rowNums) {
+	case 0:
+		utils.CheckError("Error", fmt.Errorf("no shifts were found on %s", dayOrDate))
+	default:
+		utils.BoldWhite.Println("MATCHES")
+		views.DisplayOptions(matches)
+
+		intSelection := displayDeletion(rows, rowNums)
+		switch confirmation := utils.ConfirmInput("deletion"); confirmation {
+		case "y":
+			popShift(intSelection, month, rows, year)
+			utils.BoldGreen.Printf("\nSuccessfully deleted shift.\n")
+		case "n":
+			utils.BoldYellow.Printf("\nABORTING.\n")
+		}
+	}
+
+	fmt.Println("")
 }
 
 // Delete the selected shift from the database.
