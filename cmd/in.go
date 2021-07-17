@@ -37,9 +37,29 @@ command functions.
 		message, _ := cmd.Flags().GetString("message")
 
 		if status, err := models.CheckStatus(); !status || err != nil {
+			currentTime := time.Now().Format("01-02-2006 15:04:05 Monday")
+			utils.BoldBlue.Println("Clock-in time:", currentTime)
+			fmt.Println("")
+
+			ss := models.ShiftStatus{
+				Type:    "IN",
+				Status:  "ACTIVE",
+				Time:    currentTime,
+				Message: message,
+			}
+			ss.SetStatus()
+
+			shiftData := models.ShiftData{
+				Type:    "IN",
+				Date:    strings.Split(currentTime, " ")[0],
+				Day:     strings.Split(currentTime, " ")[2],
+				Time:    strings.Split(currentTime, " ")[1],
+				Message: message,
+			}
+
 			modify.CRUD(
-				func() { recordInTimesheet(message) },
-				func() { recordInDatabase(message) },
+				func() { shiftData.RecordToTimesheet() },
+				func() { shiftData.RecordToDB() },
 			)
 		} else {
 			utils.BoldYellow.Print("ALREADY CLOCKED IN\n\n")
@@ -57,33 +77,4 @@ func init() {
 		"Clocked in",
 		"Include a complimentary clock-in message",
 	)
-}
-
-// Record clock-in in the timesheet.
-func recordInTimesheet(message string) {
-	currentTime := time.Now().Format("01-02-2006 15:04:05 Monday")
-	utils.BoldBlue.Println("Clock-in time:", currentTime)
-	fmt.Println("")
-
-	ss := models.ShiftStatus{
-		Type:    "IN",
-		Status:  "ACTIVE",
-		Time:    currentTime,
-		Message: message,
-	}
-	ss.SetStatus()
-
-	shiftData := models.ShiftData{
-		Type:    "IN",
-		Date:    strings.Split(currentTime, " ")[0],
-		Day:     strings.Split(currentTime, " ")[2],
-		Time:    strings.Split(currentTime, " ")[1],
-		Message: message,
-	}
-	shiftData.RecordShift()
-}
-
-// Record clock-in in the database.
-func recordInDatabase(message string) {
-	fmt.Println("DATABASE SELECTED")
 }
