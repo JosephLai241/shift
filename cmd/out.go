@@ -3,6 +3,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -10,9 +11,10 @@ import (
 	"github.com/JosephLai241/shift/modify"
 	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-// outCmd represents the out command
+// outCmd represents the out command.
 var outCmd = &cobra.Command{
 	Use:   "out",
 	Short: "Clock out",
@@ -42,6 +44,7 @@ command functions.
 			utils.BoldYellow.Println("`shift` is currently inactive. Please clock-in.")
 			fmt.Println("")
 		} else {
+			runStorageCheck()
 			modify.CRUD(
 				func() { recordOutTimesheet(message) },
 				func() { recordOutDatabase(message) },
@@ -50,6 +53,7 @@ command functions.
 	},
 }
 
+// Add the `out` command and its sub-flags to the base command.
 func init() {
 	rootCmd.AddCommand(outCmd)
 
@@ -58,6 +62,23 @@ func init() {
 		"Clocked out",
 		"Include a complimentary clock-out message",
 	)
+}
+
+// Check the storage setting written in `.shiftstatus`.
+func runStorageCheck() {
+	if storageType := models.CheckStorageType(); storageType != viper.GetString("storage-type") {
+		issueString := "The `storage-type` value was changed while you were clocked-in."
+		previousString := fmt.Sprintf("\n\nThe previous value was set at: %s\n", utils.BoldWhite.Sprint(storageType))
+		currentString := fmt.Sprintf("But the current value is set at: %s\n\n", utils.BoldWhite.Sprint(viper.GetString("storage-type")))
+		suggestionString := "Please change the `storage-type` value in '.shiftconfig.yml' back to the previous value before clocking out.\n\n"
+
+		utils.CheckError(
+			"`storage-type` error",
+			errors.New(fmt.Sprint(
+				issueString+previousString+currentString+suggestionString),
+			),
+		)
+	}
 }
 
 // Record clock-out in the timesheet.

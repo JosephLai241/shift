@@ -35,6 +35,27 @@ func CheckStatus() (bool, error) {
 	}
 }
 
+// Check the `storage-type` value in `.shiftstatus`.
+func CheckStorageType() string {
+	var storageType string
+	if dotfile, err := os.Open(DotfileName); err != nil {
+		utils.CheckError(
+			"Error reading '.shiftstatus'",
+			errors.New("'.shiftstatus' does not exist"),
+		)
+	} else {
+		scanner := bufio.NewScanner(dotfile)
+		for scanner.Scan() {
+			splitString := strings.Split(scanner.Text(), "=")
+			if splitString[0] == "storage-type" {
+				storageType = splitString[1]
+			}
+		}
+	}
+
+	return storageType
+}
+
 // Display the current shift status set in `.shiftstatus`.
 func DisplayStatus(displayState bool) {
 	dotfile, err := os.Open(DotfileName)
