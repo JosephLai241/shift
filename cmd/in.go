@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// inCmd represents the in command
+// inCmd represents the in command.
 var inCmd = &cobra.Command{
 	Use:   "in",
 	Short: "Clock in",
@@ -48,7 +48,7 @@ command functions.
 	},
 }
 
-// Add the in flag and its subcommands to the base command.
+// Add the `in` command and its sub-flags to the base command.
 func init() {
 	rootCmd.AddCommand(inCmd)
 

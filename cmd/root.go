@@ -65,6 +65,7 @@ func Execute() {
 	cobra.CheckErr(rootCmd.Execute())
 }
 
+// Initialize the command-line interface.
 func init() {
 	cobra.OnInitialize(initConfig)
 }

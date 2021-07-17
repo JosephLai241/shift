@@ -16,7 +16,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// amendCmd represents the amend command
+// amendCmd represents the amend command.
 var amendCmd = &cobra.Command{
 	Use:   "amend (in|out)",
 	Short: "Amend a shift's clock-in or clock-out message",
@@ -73,6 +73,7 @@ search for a particular shift or shifts.
 	},
 }
 
+// Add the `amend` command and its sub-flags to the base command.
 func init() {
 	rootCmd.AddCommand(amendCmd)
 

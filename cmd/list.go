@@ -82,6 +82,7 @@ search for a particular shift or shifts.
 	},
 }
 
+// Add the `list` command and its sub-flags to the base command.
 func init() {
 	rootCmd.AddCommand(listCmd)
 
