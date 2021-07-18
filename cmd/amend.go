@@ -5,6 +5,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -125,12 +126,15 @@ func checkSelection(rowNums []int) int {
 	}
 }
 
+// Timesheet functions.
+// --------------------
+
 // Amend the data in the selected shift and display the updated data.
-func displayUpdate(args []string, rows [][]string, rowNums []int) ([]string, int) {
+func displaySheetUpdate(args []string, rows [][]string, rowNums []int) ([]string, int) {
 	intSelection := checkSelection(rowNums)
 	amendRow := rows[intSelection]
 	target := strings.ToLower(args[0])
-	models.AmendMessage(amendRow, args[1], target)
+	models.AmendSheetMessage(amendRow, args[1], target)
 
 	fmt.Println("")
 	utils.BoldWhite.Println("CHANGES")
@@ -171,7 +175,7 @@ func amendTimesheet(args []string, dayOrDate string, month string, year string) 
 		utils.BoldWhite.Println("MATCHES")
 		views.DisplayOptions(matches)
 
-		amendRow, intSelection := displayUpdate(args, rows, rowNums)
+		amendRow, intSelection := displaySheetUpdate(args, rows, rowNums)
 
 		switch confirmation := utils.ConfirmInput("revision"); confirmation {
 		case "y":
@@ -185,7 +189,76 @@ func amendTimesheet(args []string, dayOrDate string, month string, year string) 
 	fmt.Println("")
 }
 
+// SQLite functions.
+// -----------------
+
+// Display options that were pulled from the query in a neat table.
+func displayDBOptions(dRows []modify.Deserialize) ([][]string, []int) {
+	var rowNums []int
+	var options [][]string
+	for _, row := range dRows {
+		rowNums = append(rowNums, row.ShiftID)
+
+		shiftID := strconv.Itoa(row.ShiftID)
+		displayRow := []string{
+			shiftID,
+			row.Date,
+			row.Day,
+			row.ClockIn,
+			row.ClockInMessage,
+			row.ClockOut,
+			row.ClockOutMessage,
+			row.ShiftDuration,
+		}
+		options = append(options, displayRow)
+	}
+
+	views.DisplayOptions(options)
+
+	return options, rowNums
+}
+
+// Display the changes that will be made.
+func displayDBUpdate(newMessage string, options [][]string, rowNum int, target string) {
+	targetRow := options[rowNum]
+	targetRow = targetRow[1:]
+
+	var targetIndex int
+	switch target {
+	case "in":
+		targetIndex = 3
+	case "out":
+		targetIndex = 5
+	}
+
+	targetRow[targetIndex] = newMessage
+
+	utils.BoldWhite.Println("CHANGES")
+	views.Display([][]string{targetRow})
+}
+
 // Amend a shift in the database.
 func amendDatabase(args []string, dayOrDate string, month string, year string) {
-	fmt.Println("amendDatabase() called!")
+	database, err := modify.OpenDatabase()
+	utils.CheckError("Could not open SQLite instance", err)
+	defer database.Close()
+
+	dRows := models.QueryMatches(database, dayOrDate, strings.Title(month), year)
+
+	options, rowNums := displayDBOptions(dRows)
+	shiftID := checkSelection(rowNums)
+	rowNum := sort.SearchInts(rowNums, shiftID)
+
+	displayDBUpdate(args[1], options, rowNum, args[0])
+
+	switch confirmation := utils.ConfirmInput("revision"); confirmation {
+	case "y":
+		models.FormatMessage(&args[1])
+		models.AmendDBMessage(database, month, strconv.Itoa(shiftID), args[1], args[0], year)
+		utils.BoldGreen.Printf("\nSuccessfully amended clock-%s message on %s.\n", args[0], dayOrDate)
+	case "n":
+		utils.BoldYellow.Printf("\nABORTING.\n")
+	}
+
+	fmt.Println("")
 }
