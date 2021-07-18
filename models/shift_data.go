@@ -278,7 +278,7 @@ GROUP BY ShiftID
 func AmendDBMessage(
 	database *sql.DB,
 	month string,
-	ShiftID string,
+	shiftID string,
 	newMessage string,
 	target string,
 	year string,
@@ -302,8 +302,24 @@ WHERE Month IN
 		setMessage,
 		year,
 		month,
-		ShiftID,
+		shiftID,
 	)
 
 	modify.ExecuteQuery(database, amendSQL)
+}
+
+// Delete a record in the SQLite instance.
+func DeleteShiftDB(database *sql.DB, month string, shiftID string, year string) {
+	deleteSQL := fmt.Sprintf(`
+DELETE FROM M_%s
+WHERE Month IN
+	(SELECT Month FROM Y_%s WHERE Month = '%s' AND ShiftID = '%s');
+	`,
+		month,
+		year,
+		month,
+		shiftID,
+	)
+
+	modify.ExecuteQuery(database, deleteSQL)
 }
