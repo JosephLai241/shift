@@ -59,10 +59,9 @@ func OpenDatabase() (*sql.DB, error) {
 
 // Insert a new year into the `YEAR` table.
 func InsertYear(database *sql.DB) {
-	// SQL for inserting a new year.
 	insertYear := fmt.Sprintf(`
-		INSERT OR IGNORE INTO YEAR (Year)
-		VALUES (%s);
+INSERT OR IGNORE INTO YEAR (Year)
+VALUES (%s);
 	`, utils.CurrentYear)
 
 	ExecuteQuery(database, insertYear)
@@ -70,10 +69,9 @@ func InsertYear(database *sql.DB) {
 
 // Insert a new month into the current year's table.
 func InsertMonth(database *sql.DB) {
-	// SQL for inserting a new month.
 	insertMonth := fmt.Sprintf(`
-		INSERT OR IGNORE INTO Y_%s (Month, Year)
-		VALUES ('%s', %s);
+INSERT OR IGNORE INTO Y_%s (Month, Year)
+VALUES ('%s', %s);
 	`, utils.CurrentYear, utils.CurrentMonth, utils.CurrentYear)
 
 	ExecuteQuery(database, insertMonth)
@@ -157,6 +155,7 @@ func ExecuteQuery(database *sql.DB, query string) {
 	statement.Exec()
 }
 
+// Create the .db binary and relational tables within it.
 func StructureDB() {
 	database, err := OpenDatabase()
 	utils.CheckError("Could not open SQLite instance", err)
