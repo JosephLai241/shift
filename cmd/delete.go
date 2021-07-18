@@ -126,7 +126,6 @@ func deleteShiftTimesheet(dayOrDate string, month string, year string) {
 	timesheet, err := getTimesheetByDFlags(month, false, year)
 	if err != nil {
 		utils.CheckError(
-			// fmt.Sprintf("An error occurred when listing shifts recorded in %s %s", strings.Title(month), year),
 			fmt.Sprintf("An error occurred when listing shifts recorded in %s %s", month, year),
 			errors.New("no shifts were recorded"),
 		)
@@ -135,10 +134,9 @@ func deleteShiftTimesheet(dayOrDate string, month string, year string) {
 	rows := modify.ReadTimesheet(timesheet)
 	fmt.Println("")
 
-	switch rowNums, matches := models.FindMatches(dayOrDate, rows); len(rowNums) {
-	case 0:
+	if rowNums, matches := models.FindMatches(dayOrDate, rows); len(rowNums) == 0 {
 		utils.CheckError("Error", fmt.Errorf("no shifts were found on %s", dayOrDate))
-	default:
+	} else {
 		utils.BoldWhite.Println("MATCHES")
 		views.DisplayOptions(matches)
 
@@ -164,26 +162,28 @@ func deleteShiftDatabase(dayOrDate string, month string, year string) {
 	utils.CheckError("Could not open SQLite instance", err)
 	defer database.Close()
 
-	dRows := models.QueryMatches(database, dayOrDate, strings.Title(month), year)
+	if dRows := models.QueryMatches(database, dayOrDate, month, year); len(dRows) == 0 {
+		utils.CheckError("Error", fmt.Errorf("no shifts were found on %s", dayOrDate))
+	} else {
+		options, rowNums := displayDBOptions(dRows)
+		for i, row := range options {
+			options[i] = row[1:]
+		}
 
-	options, rowNums := displayDBOptions(dRows)
-	for i, row := range options {
-		options[i] = row[1:]
-	}
+		shiftID := checkSelection(rowNums)
+		rowNum := sort.SearchInts(rowNums, shiftID)
 
-	shiftID := checkSelection(rowNums)
-	rowNum := sort.SearchInts(rowNums, shiftID)
+		fmt.Println("")
+		utils.BoldRed.Println("PENDING DELETION")
+		views.Display([][]string{options[rowNum]})
 
-	fmt.Println("")
-	utils.BoldRed.Println("PENDING DELETION")
-	views.Display([][]string{options[rowNum]})
-
-	switch confirmation := utils.ConfirmInput("deletion"); confirmation {
-	case "y":
-		models.DeleteShiftDB(database, month, strconv.Itoa(shiftID), year)
-		utils.BoldGreen.Printf("\nSuccessfully deleted shift.\n")
-	case "n":
-		utils.BoldYellow.Printf("\nABORTING.\n")
+		switch confirmation := utils.ConfirmInput("deletion"); confirmation {
+		case "y":
+			models.DeleteShiftDB(database, month, strconv.Itoa(shiftID), year)
+			utils.BoldGreen.Printf("\nSuccessfully deleted shift.\n")
+		case "n":
+			utils.BoldYellow.Printf("\nABORTING.\n")
+		}
 	}
 
 	fmt.Println("")
