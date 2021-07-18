@@ -73,10 +73,11 @@ search for a particular shift or shifts.
 		}
 
 		dayOrDate, month, year := formatFlags(cmd)
+		month = strings.Title(month)
 
 		modify.CRUD(
 			func() { listShiftsTimesheet(dayOrDate, month, subCommand, year) },
-			func() { listShiftsDatabase() },
+			func() { listShiftsDatabase(dayOrDate, month, subCommand, year) },
 		)
 	},
 }
@@ -119,6 +120,20 @@ func checkOptionalCommand(args []string) string {
 	return strings.ToLower(args[0])
 }
 
+// Format and then display the error message if no matches were found.
+func displayError(dayOrDate string, month string, year string) {
+	var errorMessage error
+	if dayOrDate != utils.CurrentDate || month != utils.CurrentMonth || year != utils.CurrentYear {
+		errorMessage = errors.New("no shifts were found based on your search parameters")
+	} else {
+		errorMessage = errors.New("no shifts were recorded today")
+	}
+	utils.CheckError("Error", errorMessage)
+}
+
+// Timesheet functions.
+// --------------------
+
 // Find matches based on search day or date and format the records.
 func getAndFormatMatches(dayOrDate string, rows [][]string) [][]string {
 	_, matches := models.FindMatches(dayOrDate, rows)
@@ -149,7 +164,6 @@ func listMatches(dayOrDate string, matches [][]string, month string, year string
 
 // Pull and list records from timesheets.
 func listShiftsTimesheet(dayOrDate string, month string, subCommand string, year string) {
-	month = strings.Title(month)
 
 	timesheet, err := getTimesheetByDFlags(month, false, year)
 	if err != nil {
@@ -160,13 +174,7 @@ func listShiftsTimesheet(dayOrDate string, month string, subCommand string, year
 	}
 
 	if rows := modify.ReadTimesheet(timesheet); len(rows) == 0 {
-		var errorMessage error
-		if dayOrDate != utils.CurrentDate || month != utils.CurrentMonth || year != utils.CurrentYear {
-			errorMessage = errors.New("no shifts were found based on your search parameters")
-		} else {
-			errorMessage = errors.New("no shifts were recorded today")
-		}
-		utils.CheckError("Error", errorMessage)
+		displayError(dayOrDate, month, year)
 	} else {
 		rows = rows[1:]
 
@@ -180,7 +188,32 @@ func listShiftsTimesheet(dayOrDate string, month string, subCommand string, year
 	}
 }
 
+// SQLite functions.
+// -----------------
+
 // Pull and list records from the database.
-func listShiftsDatabase() {
-	fmt.Println("listShiftsDatabase() called!")
+func listShiftsDatabase(dayOrDate string, month string, subCommand string, year string) {
+	database, err := modify.OpenDatabase()
+	utils.CheckError("Could not open SQLite instance", err)
+	defer database.Close()
+
+	if dRows := models.QueryMatches(database, dayOrDate, month, year); len(dRows) == 0 {
+		displayError(dayOrDate, month, year)
+	} else {
+		var shifts [][]string
+		for _, row := range dRows {
+			displayRow := []string{
+				row.Date,
+				row.Day,
+				row.ClockIn,
+				row.ClockInMessage,
+				row.ClockOut,
+				row.ClockOutMessage,
+				row.ShiftDuration,
+			}
+			shifts = append(shifts, displayRow)
+		}
+
+		views.Display(shifts)
+	}
 }
