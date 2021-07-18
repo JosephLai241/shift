@@ -64,6 +64,7 @@ search for a particular shift or shifts.
 		fmt.Println(utils.AmendArt)
 
 		checkArgs(args)
+		args[0] = strings.ToLower(args[0])
 		dayOrDate, month, year := formatFlags(cmd)
 
 		modify.CRUD(
@@ -133,7 +134,7 @@ func checkSelection(rowNums []int) int {
 func displaySheetUpdate(args []string, rows [][]string, rowNums []int) ([]string, int) {
 	intSelection := checkSelection(rowNums)
 	amendRow := rows[intSelection]
-	target := strings.ToLower(args[0])
+	target := args[0]
 	models.AmendSheetMessage(amendRow, args[1], target)
 
 	fmt.Println("")
