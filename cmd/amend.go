@@ -169,10 +169,9 @@ func amendTimesheet(args []string, dayOrDate string, month string, year string) 
 	rows := modify.ReadTimesheet(timesheet)
 	fmt.Println("")
 
-	switch rowNums, matches := models.FindMatches(dayOrDate, rows); len(rowNums) {
-	case 0:
+	if rowNums, matches := models.FindMatches(dayOrDate, rows); len(rowNums) == 0 {
 		utils.CheckError("Error", fmt.Errorf("no shifts were found on %s", dayOrDate))
-	default:
+	} else {
 		utils.BoldWhite.Println("MATCHES")
 		views.DisplayOptions(matches)
 
@@ -244,21 +243,23 @@ func amendDatabase(args []string, dayOrDate string, month string, year string) {
 	utils.CheckError("Could not open SQLite instance", err)
 	defer database.Close()
 
-	dRows := models.QueryMatches(database, dayOrDate, strings.Title(month), year)
+	if dRows := models.QueryMatches(database, dayOrDate, month, year); len(dRows) == 0 {
+		utils.CheckError("Error", fmt.Errorf("no shifts were found on %s", dayOrDate))
+	} else {
+		options, rowNums := displayDBOptions(dRows)
+		shiftID := checkSelection(rowNums)
+		rowNum := sort.SearchInts(rowNums, shiftID)
 
-	options, rowNums := displayDBOptions(dRows)
-	shiftID := checkSelection(rowNums)
-	rowNum := sort.SearchInts(rowNums, shiftID)
+		displayDBUpdate(args[1], options, rowNum, args[0])
 
-	displayDBUpdate(args[1], options, rowNum, args[0])
-
-	switch confirmation := utils.ConfirmInput("revision"); confirmation {
-	case "y":
-		models.FormatMessage(&args[1])
-		models.AmendDBMessage(database, month, strconv.Itoa(shiftID), args[1], args[0], year)
-		utils.BoldGreen.Printf("\nSuccessfully amended clock-%s message on %s.\n", args[0], dayOrDate)
-	case "n":
-		utils.BoldYellow.Printf("\nABORTING.\n")
+		switch confirmation := utils.ConfirmInput("revision"); confirmation {
+		case "y":
+			models.FormatMessage(&args[1])
+			models.AmendDBMessage(database, month, strconv.Itoa(shiftID), args[1], args[0], year)
+			utils.BoldGreen.Printf("\nSuccessfully amended clock-%s message on %s.\n", args[0], dayOrDate)
+		case "n":
+			utils.BoldYellow.Printf("\nABORTING.\n")
+		}
 	}
 
 	fmt.Println("")
