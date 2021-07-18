@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS Y_%s (
 // SQL for creating the current month's table.
 var monthSQL string = fmt.Sprintf(`
 CREATE TABLE IF NOT EXISTS M_%s (
-	MonthID INTEGER PRIMARY KEY AUTOINCREMENT,
+	ShiftID INTEGER PRIMARY KEY AUTOINCREMENT,
 	Date TEXT,
 	Day TEXT,
 	ClockIn TEXT,
@@ -79,33 +79,9 @@ func InsertMonth(database *sql.DB) {
 	ExecuteQuery(database, insertMonth)
 }
 
-// Query the database by date.
-// func queryByDate(database *sql.DB, date string) []string {
-// 	var getDateSQL string = fmt.Sprintf(`
-// 		SELECT
-// 			Date,
-// 			Day,
-// 			ClockIn,
-// 			ClockInMessage,
-// 			ClockOut,
-// 			ClockOutMessage,
-// 			ShiftDuration
-// 		FROM M_%s
-// 		WHERE Date = %s;`,
-// 		currentMonth,
-// 		date,
-// 	)
-
-// 	statement, err := database.Prepare(getDateSQL)
-// 	utils.CheckError(fmt.Sprintf("An error occurred when trying to query the database by date. SQL is: \n%s\n\n", getDateSQL), err)
-// 	queryResult, err := statement.Exec()
-// 	utils.CheckError("An error occurred when trying to return a query from the database", err)
-
-// }
-
 // Struct used to store deserialized data from querying the SQLite instance.
 type Deserialize struct {
-	MonthID         int
+	ShiftID         int
 	Date            string
 	Day             string
 	ClockIn         string
@@ -116,16 +92,18 @@ type Deserialize struct {
 	Month           string
 }
 
-// Run a SELECT SQL on the SQLite instance and return a slice of deserialized data.
+// Run a SELECT SQL on the SQLite instance and return a slice of structs containing
+// deserialized data.
 func DeserializeRows(database *sql.DB, query string) []Deserialize {
-	rows, _ := database.Query(query)
+	rows, err := database.Query(query)
+	utils.CheckError(fmt.Sprintf("An error occurred when running query: %s", query), err)
 	defer rows.Close()
 
 	var deser Deserialize
 	var dRows []Deserialize
 	for rows.Next() {
 		err := rows.Scan(
-			&deser.MonthID,
+			&deser.ShiftID,
 			&deser.Date,
 			&deser.Day,
 			&deser.ClockIn,
@@ -154,7 +132,7 @@ func QueryTable(month string) []Deserialize {
 	var dRows []Deserialize
 	for rows.Next() {
 		err := rows.Scan(
-			&deser.MonthID,
+			&deser.ShiftID,
 			&deser.Date,
 			&deser.Day,
 			&deser.ClockIn,
@@ -184,6 +162,7 @@ func StructureDB() {
 	utils.CheckError("Could not open SQLite instance", err)
 	defer database.Close()
 
+	ExecuteQuery(database, "PRAGMA foreign_keys = ON;") // Enable foreign key constraint.
 	ExecuteQuery(database, mainSQL)
 
 	ExecuteQuery(database, yearSQL)
