@@ -5,6 +5,8 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/JosephLai241/shift/models"
@@ -62,10 +64,11 @@ search for a particular shift or shifts.
 		fmt.Println(utils.DeleteArt)
 
 		dayOrDate, month, year := formatFlags(cmd)
+		month = strings.Title(month)
 
 		modify.CRUD(
 			func() { deleteShiftTimesheet(dayOrDate, month, year) },
-			func() { deleteShiftDatabase() },
+			func() { deleteShiftDatabase(dayOrDate, month, year) },
 		)
 	},
 }
@@ -90,6 +93,9 @@ func init() {
 		"Search records in a year",
 	)
 }
+
+// Timesheet functions.
+// --------------------
 
 // Display the selected shift to be deleted from the timesheet.
 func displayDeletion(rows [][]string, rowNums []int) int {
@@ -120,7 +126,8 @@ func deleteShiftTimesheet(dayOrDate string, month string, year string) {
 	timesheet, err := getTimesheetByDFlags(month, false, year)
 	if err != nil {
 		utils.CheckError(
-			fmt.Sprintf("An error occurred when listing shifts recorded in %s %s", strings.Title(month), year),
+			// fmt.Sprintf("An error occurred when listing shifts recorded in %s %s", strings.Title(month), year),
+			fmt.Sprintf("An error occurred when listing shifts recorded in %s %s", month, year),
 			errors.New("no shifts were recorded"),
 		)
 	}
@@ -148,7 +155,36 @@ func deleteShiftTimesheet(dayOrDate string, month string, year string) {
 	fmt.Println("")
 }
 
+// SQLite functions.
+// -----------------
+
 // Delete the selected shift from the database.
-func deleteShiftDatabase() {
-	fmt.Println("deleteShiftDB() called!")
+func deleteShiftDatabase(dayOrDate string, month string, year string) {
+	database, err := modify.OpenDatabase()
+	utils.CheckError("Could not open SQLite instance", err)
+	defer database.Close()
+
+	dRows := models.QueryMatches(database, dayOrDate, strings.Title(month), year)
+
+	options, rowNums := displayDBOptions(dRows)
+	for i, row := range options {
+		options[i] = row[1:]
+	}
+
+	shiftID := checkSelection(rowNums)
+	rowNum := sort.SearchInts(rowNums, shiftID)
+
+	fmt.Println("")
+	utils.BoldRed.Println("PENDING DELETION")
+	views.Display([][]string{options[rowNum]})
+
+	switch confirmation := utils.ConfirmInput("deletion"); confirmation {
+	case "y":
+		models.DeleteShiftDB(database, month, strconv.Itoa(shiftID), year)
+		utils.BoldGreen.Printf("\nSuccessfully deleted shift.\n")
+	case "n":
+		utils.BoldYellow.Printf("\nABORTING.\n")
+	}
+
+	fmt.Println("")
 }
