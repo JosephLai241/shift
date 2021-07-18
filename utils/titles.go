@@ -51,6 +51,14 @@ var DeleteArt string = BoldWhite.Sprint(`
 |___|___|_|___|_| |___|
 `)
 
+var StorageArt string = BoldWhite.Sprint(`
+     _
+ ___| |_ ___ ___ ___ ___ ___ 
+|_ -|  _| . |  _| .'| . | -_|
+|___|_| |___|_| |__,|_  |___|
+                    |___|
+`)
+
 var ErrorArt string = BoldRed.Sprint(`
  ___ 
 | -_|
