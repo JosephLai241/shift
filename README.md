@@ -47,7 +47,7 @@ Then verify `shift` built successfully:
 
 # How `shift` Works
 
-This tool is capable of storing shift data into CSV spreadsheets or a local SQLite instance. **The default is storing into CSV spreadsheets**, but you can configure which storage option you would like to use in the `.shiftconfig.yml` dotfile. The [How to Set the Storage Option](#how-to-set-the-storage-option) provides information for how to do so.
+This tool is capable of storing shift data into CSV spreadsheets or a local SQLite instance. **The default is CSV spreadsheets**. See the [How to Set the Storage Option](#how-to-set-the-storage-option) section for information on how to configure this.
 
 ## Storing Data Into Timesheets
 
@@ -202,20 +202,17 @@ You can search for recorded shifts on a different day, month, and/or year by inc
 
 # How to Set the Storage Option
 
-On the first run, `shift` will create the `.shiftconfig.yml` configuration file in your current working directory. It only contains one line:
+```
+shift storage 
 
-```yaml
-storage-type: timesheet
+    [set (timesheet|database)]
 ```
 
-As mentioned before, storing shift data in CSV timesheets is the default storage option and is preset within the YAML file. There are two accepted values:
+You can check the current storage option by using the `storage` command without additional sub-commands.
 
-* `timesheet`
-* `database`
+You can change the storage option by including the `set` sub-command and providing `timesheet` or `database` as its value to switch from one to another.
 
-> ***NOTE***: `shift` will process your change on your next clock in if the `storage-type` value is changed while you are clocked in. 
->
-> For example, if `storage-type` is currently set to `timesheet` and you change the value to `database` while clocked in, your clock-out data will still be written to the current month's timesheet. Shift data will be written to the `shifts.db` SQLite instance on your next clock-in.
+> ***NOTE***: You cannot change storage options while clocked in. `shift` will throw an error if you attempt to do so.
 
 <!-- Links -->
 [Go]: https://golang.org/
