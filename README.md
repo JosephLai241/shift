@@ -25,6 +25,7 @@
     + [List Tracked Shifts](#list-tracked-shifts)
     + [Delete a Shift](#delete-a-shift)
 * [How to Set the Storage Option](#how-to-set-the-storage-option)
+* [Multiple "Instances" of `shift`](#multiple-instances-of-shift)
 
 # Introduction
 
@@ -236,6 +237,22 @@ You can check the current storage option by using the `storage` command without 
 You can change the storage option by including the `set` sub-command and providing `timesheet` or `database` as its value to switch from one to another.
 
 > ***NOTE***: You cannot change storage options while clocked in. `shift` will throw an error if you attempt to do so.
+
+# Multiple "Instances" of `shift`
+
+You may want to use multiple "instances" of `shift`. For example, if you are working two different jobs, or want to track time spent on personal projects in addition to your day job.
+
+It is quite a simple solution - just copy the `shift` executable into different directories like so:
+
+```
+day_job/
+└── shift <-- executable
+
+URS/
+└── shift <-- executable
+```
+
+You are now able to track the time you spent doing different things :thumbsup:
 
 <!-- Links -->
 [Go]: https://golang.org/
