@@ -76,7 +76,7 @@ shifts/
 
 ## Storing Data Into a SQLite Instance
 
-A SQLite instance `shifts.db` is created within the current working directory. The data is then stored in a table labeled with the current year, which is then linked to a sub-table labeled with the current month.
+A SQLite instance `shifts.db` is created within the current working directory. A main `YEAR` table is created, containing the years that `shift` was run. The data is then stored in a table labeled with the current year, which is then linked to a sub-table labeled with the current month.
 
 This is an example of the database's relationships if you ran `shift` sometime during July 2021:
 
