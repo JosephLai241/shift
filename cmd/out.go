@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/JosephLai241/shift/models"
-	"github.com/JosephLai241/shift/modify"
 	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -65,7 +64,7 @@ command functions.
 				Message: message,
 			}
 
-			modify.CRUD(
+			utils.CRUD(
 				func() { shiftData.RecordToTimesheet() },
 				func() { shiftData.RecordToDB() },
 			)

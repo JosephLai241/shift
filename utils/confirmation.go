@@ -4,6 +4,7 @@ package utils
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -28,4 +29,25 @@ func ConfirmInput(action string) string {
 	}
 
 	return strings.ToLower(input)
+}
+
+// Check if the selection pointing to a target shift is valid.
+func CheckSelection(rowNums []int) int {
+	validOptions := make(map[int]struct{})
+	for i := range rowNums {
+		validOptions[rowNums[i]] = struct{}{}
+	}
+
+	var input string
+	for {
+		fmt.Printf("\nSelect a shift to modify %+v: ", rowNums)
+		fmt.Scanln(&input)
+
+		intSelection, _ := strconv.Atoi(input)
+		if _, ok := validOptions[intSelection]; !ok {
+			BoldRed.Print("\nInvalid option. Try again.\n")
+		} else {
+			return intSelection
+		}
+	}
 }

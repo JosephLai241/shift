@@ -1,6 +1,6 @@
 // Defining the execution switch - determines where to execute CRUD operations.
 
-package modify
+package utils
 
 import "github.com/spf13/viper"
 

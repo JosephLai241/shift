@@ -6,11 +6,10 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
-	"strconv"
-	"strings"
 	"time"
 
-	"github.com/JosephLai241/shift/modify"
+	"github.com/JosephLai241/shift/database"
+	"github.com/JosephLai241/shift/timesheet"
 	"github.com/JosephLai241/shift/utils"
 )
 
@@ -63,7 +62,7 @@ func (shiftData ShiftData) recordInSheet(overwriteFile *os.File, rows [][]string
 	}
 	rows = append(rows, newRow)
 
-	modify.WriteToTimesheet(overwriteFile, rows)
+	timesheet.WriteToTimesheet(overwriteFile, rows)
 }
 
 // Write clock-out data to the timesheet.
@@ -80,16 +79,16 @@ func (shiftData ShiftData) recordOutSheet(overwriteFile *os.File, rows [][]strin
 		}
 	}
 
-	modify.WriteToTimesheet(overwriteFile, rows)
+	timesheet.WriteToTimesheet(overwriteFile, rows)
 }
 
 // Write data stored in the ShiftData struct to the timesheet.
 func (shiftData *ShiftData) RecordToTimesheet() {
-	timesheetDirectory := modify.InitializeDirectories()
-	timesheetPath := modify.GetTimesheetPath(timesheetDirectory)
+	timesheetDirectory := timesheet.InitializeDirectories()
+	timesheetPath := timesheet.GetTimesheetPath(timesheetDirectory)
 
-	readFile := modify.InitializeTimesheet(timesheetPath)
-	rows := modify.ReadTimesheet(readFile)
+	readFile := timesheet.InitializeTimesheet(timesheetPath)
+	rows := timesheet.ReadTimesheet(readFile)
 
 	overwriteFile, _ := os.OpenFile(timesheetPath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	if shiftData.Type == "IN" {
@@ -99,61 +98,12 @@ func (shiftData *ShiftData) RecordToTimesheet() {
 	}
 }
 
-// Find and return matches in the timesheet based on the day or date.
-func FindMatches(dayOrDate string, rows [][]string) ([]int, [][]string) {
-	var targetIndex int
-	switch contains := strings.Contains(dayOrDate, "-"); contains {
-	case true:
-		targetIndex = 0
-	case false:
-		targetIndex = 1
-	}
-
-	var matches [][]string
-	var rowNums []int
-	for i, row := range rows {
-		if row[targetIndex] == dayOrDate {
-			matchRow := append([]string{strconv.Itoa(i)}, row...)
-			matches = append(matches, matchRow)
-			rowNums = append(rowNums, i)
-		}
-	}
-
-	if len(matches) < 1 {
-		return nil, nil
-	}
-
-	return rowNums, matches
-}
-
-// Amend a clock-in or clock-out message within the timesheet.
-func AmendSheetMessage(amendRow []string, newMessage string, target string) {
-	var targetIndex int
-
-	switch {
-	case target == "in":
-		targetIndex = 3
-	case target == "out":
-		targetIndex = 5
-	}
-
-	amendRow[targetIndex] = newMessage
-}
-
 // SQLite functions.
 // -----------------
 
-// Format the message if there are quotes. Single quotes need to be doubled up
-// (ie. `''`) when inserting into a SQL database.
-func FormatMessage(message *string) {
-	if strings.Contains(*message, "'") {
-		*message = strings.ReplaceAll(*message, "'", "''")
-	}
-}
-
 // Insert clock-in data into the SQLite instance.
-func (shiftData ShiftData) recordInDB(database *sql.DB) {
-	FormatMessage(&shiftData.Message)
+func (shiftData ShiftData) recordInDB(db *sql.DB) {
+	database.FormatMessage(&shiftData.Message)
 
 	insertSQL := fmt.Sprintf(`
 INSERT INTO M_%s (
@@ -186,12 +136,12 @@ INSERT INTO M_%s (
 		utils.CurrentMonth,
 	)
 
-	modify.ExecuteQuery(database, insertSQL)
+	database.ExecuteQuery(db, insertSQL)
 }
 
 // Update the last record in the SQLite instance with the clock-out data.
-func (shiftData ShiftData) recordOutDB(database *sql.DB) {
-	FormatMessage(&shiftData.Message)
+func (shiftData ShiftData) recordOutDB(db *sql.DB) {
+	database.FormatMessage(&shiftData.Message)
 
 	getLatestEntry := fmt.Sprintf(`
 SELECT *
@@ -199,7 +149,7 @@ SELECT *
 	WHERE ShiftID = (SELECT MAX (ShiftID) FROM M_%s);
 	`, utils.CurrentMonth, utils.CurrentMonth)
 
-	dRows := modify.DeserializeRows(database, getLatestEntry)
+	dRows := database.DeserializeRows(db, getLatestEntry)
 	startString := dRows[0].Date + " " + dRows[0].ClockIn + " " + dRows[0].Day
 	duration := shiftData.calculateDuration(startString)
 
@@ -219,14 +169,14 @@ WHERE
 		utils.CurrentMonth,
 	)
 
-	modify.ExecuteQuery(database, updateSQL)
+	database.ExecuteQuery(db, updateSQL)
 }
 
 // Write data stored in the ShiftData struct to the SQLite instance.
 func (shiftData *ShiftData) RecordToDB() {
-	modify.StructureDB()
+	database.StructureDB()
 
-	database, err := modify.OpenDatabase()
+	database, err := database.OpenDatabase()
 	utils.CheckError("Could not open SQLite instance", err)
 	defer database.Close()
 
@@ -235,84 +185,4 @@ func (shiftData *ShiftData) RecordToDB() {
 	} else {
 		shiftData.recordOutDB(database)
 	}
-}
-
-// Query matches in the SQLite instance based on the day or date.
-func QueryMatches(database *sql.DB, dayOrDate string, month string, year string) []modify.Deserialize {
-	var target string
-	switch contains := strings.Contains(dayOrDate, "-"); contains {
-	case true:
-		target = "Date"
-	case false:
-		target = "Day"
-	}
-
-	clause := fmt.Sprintf("HAVING %s = '%s'", target, dayOrDate)
-	havingQuery := fmt.Sprintf(`
-SELECT *
-FROM M_%s
-WHERE Month IN
-	(SELECT Month FROM Y_%s WHERE Month = '%s')
-GROUP BY ShiftID
-%s;
-	`,
-		month,
-		year,
-		month,
-		clause,
-	)
-
-	dRows := modify.DeserializeRows(database, havingQuery)
-
-	return dRows
-}
-
-// Amend the clock-in or clock-out message within the SQLite instance.
-func AmendDBMessage(
-	database *sql.DB,
-	month string,
-	shiftID string,
-	newMessage string,
-	target string,
-	year string,
-) {
-	var setMessage string
-	switch target {
-	case "in":
-		setMessage = fmt.Sprintf("ClockInMessage = '%s'", newMessage)
-	case "out":
-		setMessage = fmt.Sprintf("ClockOutMessage = '%s'", newMessage)
-	}
-
-	amendSQL := fmt.Sprintf(`
-UPDATE M_%s
-SET
-	%s
-WHERE Month IN
-	(SELECT Month FROM Y_%s WHERE Month = '%s' AND ShiftID = '%s');
-	`,
-		month,
-		setMessage,
-		year,
-		month,
-		shiftID,
-	)
-
-	modify.ExecuteQuery(database, amendSQL)
-}
-
-// Delete a record in the SQLite instance.
-func DeleteShiftDB(database *sql.DB, month string, shiftID string, year string) {
-	deleteSQL := fmt.Sprintf(`
-DELETE FROM M_%s
-WHERE Month IN
-	(SELECT Month FROM Y_%s WHERE Month = '%s' AND ShiftID = '%s');
-	`,
-		month,
-		year,
-		month,
-		shiftID,
-	)
-
-	modify.ExecuteQuery(database, deleteSQL)
 }

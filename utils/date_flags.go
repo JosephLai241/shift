@@ -1,6 +1,6 @@
 // Operations pertaining to the date-related flags (`-d`, `-m`, `-y`).
 
-package cmd
+package utils
 
 import (
 	"errors"
@@ -9,25 +9,24 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/JosephLai241/shift/utils"
 	"github.com/spf13/cobra"
 )
 
 // Check whether the input date is valid.
 func checkDate(splitDate []string) (bool, string) {
-	validMonths := map[string]struct{ days int }{
-		"01": {days: 31},
-		"02": {days: 28},
-		"03": {days: 31},
-		"04": {days: 30},
-		"05": {days: 31},
-		"06": {days: 30},
-		"07": {days: 31},
-		"08": {days: 30},
-		"09": {days: 31},
-		"10": {days: 30},
-		"11": {days: 31},
-		"12": {days: 30},
+	validMonths := map[string]int{
+		"01": 31,
+		"02": 28,
+		"03": 31,
+		"04": 30,
+		"05": 31,
+		"06": 30,
+		"07": 31,
+		"08": 30,
+		"09": 31,
+		"10": 30,
+		"11": 31,
+		"12": 30,
 	}
 
 	if len(splitDate[0]) > 2 || len(splitDate[1]) > 2 || len(splitDate[2]) > 4 {
@@ -42,11 +41,11 @@ func checkDate(splitDate []string) (bool, string) {
 	if yearErr != nil {
 		return false, "Invalid year."
 	}
-	currentYear, _ := strconv.Atoi(utils.CurrentYear)
+	currentYear, _ := strconv.Atoi(CurrentYear)
 
-	if dayStruct, ok := validMonths[splitDate[0]]; !ok {
+	if days, ok := validMonths[splitDate[0]]; !ok {
 		return false, "Invalid month."
-	} else if ok && inputDay > dayStruct.days {
+	} else if ok && inputDay > days {
 		return false, "Invalid day."
 	} else if ok && inputYear < currentYear {
 		return false, "Invalid year."
@@ -125,7 +124,7 @@ func amendDayOrDate(dayOrDate *string) {
 	}
 
 	if isValid, fixedDayOrDate, response := checkDFlag(*dayOrDate); !isValid && response != "valid" {
-		utils.CheckError("`-d` flag error", errors.New(response))
+		CheckError("`-d` flag error", errors.New(response))
 	} else {
 		*dayOrDate = fixedDayOrDate
 	}
@@ -140,10 +139,9 @@ func updateDFlagSection(dayOrDate *string, index int, newString string) {
 
 // Amend the `dayOrDate` parameter if the `-m` flag is provided.
 func amendMonth(dayOrDate *string, month string) {
-	if month != utils.CurrentMonth {
-		month = strings.Title(month)
+	if month != CurrentMonth {
 		if isValid, monthNum, response := checkMonth(month); !isValid {
-			utils.CheckError("`-m` flag error", errors.New(response))
+			CheckError("`-m` flag error", errors.New(response))
 		} else {
 			if strings.Contains(*dayOrDate, "-") {
 				updateDFlagSection(dayOrDate, 0, monthNum)
@@ -154,7 +152,7 @@ func amendMonth(dayOrDate *string, month string) {
 
 // Amend the `dayOrDate` parameter if the `-m` flag is provided.
 func amendYear(dayOrDate *string, year string) {
-	if year != utils.CurrentYear {
+	if year != CurrentYear {
 		if strings.Contains(*dayOrDate, "-") {
 			updateDFlagSection(dayOrDate, 2, year)
 		}
@@ -186,16 +184,17 @@ func extractByDate(dayOrDate string) (string, string) {
 }
 
 // Get the `dayOrDate`, `month`, and `year` parameters from flag input.
-func formatFlags(cmd *cobra.Command) (string, string, string) {
+func FormatFlags(cmd *cobra.Command) (string, string, string) {
 	dayOrDate, _ := cmd.Flags().GetString("dayordate")
 	month, _ := cmd.Flags().GetString("month")
+	month = strings.Title(month)
 	year, _ := cmd.Flags().GetString("year")
 
 	amendDayOrDate(&dayOrDate)
 	amendMonth(&dayOrDate, month)
 	amendYear(&dayOrDate, year)
 
-	if strings.Contains(dayOrDate, "-") && dayOrDate != utils.CurrentDate {
+	if strings.Contains(dayOrDate, "-") && dayOrDate != CurrentDate {
 		month, year = extractByDate(dayOrDate)
 	}
 
@@ -203,13 +202,13 @@ func formatFlags(cmd *cobra.Command) (string, string, string) {
 }
 
 // Get the timesheet based on the values set by date-related flags.
-func getTimesheetByDFlags(month string, modify bool, year string) (*os.File, error) {
-	month = strings.Title(month)
+func GetTimesheetByDFlags(month string, modify bool, year string) (*os.File, error) {
 	timesheetPath := fmt.Sprintf(
 		"%s/shifts/%s/%s.csv",
-		utils.GetCWD(),
+		GetCWD(),
 		year,
-		month)
+		month,
+	)
 
 	var timesheet *os.File
 	var err error

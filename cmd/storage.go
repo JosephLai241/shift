@@ -44,7 +44,7 @@ command, followed by the new method. Accepted storage methods are:
 
 // setCmd represents the set sub-command.
 var setCmd = &cobra.Command{
-	Use:   "set",
+	Use:   "set (timesheet|database)",
 	Short: "Set a new storage method",
 	Long: `
 Set a new storage method.
