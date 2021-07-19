@@ -73,11 +73,11 @@ Optionally, an accompanying clock-in or clock-out message will also be written t
 
 A SQLite instance `shifts.db` is created within the current working directory. The data is then stored in a table labeled with the current year, which is then linked to a sub-table labeled with the current month.
 
-This is an example of the database structure if you ran `shift` sometime during July 2021:
+This is an example of the database's relationships if you ran `shift` sometime during July 2021:
 
 ```
 shifts.db
-└── TABLE `year`
+└── TABLE `YEAR`
     └── TABLE `Y_2021`
         └── TABLE `M_July`
 ```
