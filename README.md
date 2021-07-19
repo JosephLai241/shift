@@ -71,7 +71,7 @@ This tool is capable of storing shift data into CSV spreadsheets or a local SQLi
 
 ## What Kind of Data Is Stored?
 
-The following data will be recorded by `shift`:
+The following data is recorded by `shift`:
 
 * Date
 * Day of the Week
@@ -120,7 +120,7 @@ Use this command to clock-in. The clock-in time is then written to the timesheet
 
 You can record a message corresponding to your clock in by including the `-m` flag.
 
-The status of your current shift will be displayed if you attempt to run this command when already clocked in.
+The status of your current shift is displayed if you attempt to run this command when already clocked in.
 
 ## Clocking Out
 
@@ -134,7 +134,7 @@ Use this command to clock-out. The clock-in time is then written to the timeshee
 
 You can record a message corresponding to your clock in by including the `-m` flag.
 
-Your clock-in time and message as well as your shift duration will be displayed.
+Your clock-in time and message as well as your shift duration is displayed.
 
 A warning is displayed if you attempt to run this command when already clocked out.
 
