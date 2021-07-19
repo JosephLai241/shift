@@ -12,7 +12,7 @@ import (
 func CheckError(message string, err error) {
 	if err != nil {
 		fmt.Println(ErrorArt)
-		log.Fatal(BoldRed.Sprintf("\n%s: ", message), err)
+		log.Fatal(BoldRed.Sprintf("\n%s: ", message), fmt.Sprintf("%s\n\n", err))
 	}
 }
 
