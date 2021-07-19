@@ -207,7 +207,7 @@ You can display the recorded shifts for a different day, month, and/or year by i
 ```
 shift delete
 
-    [-d <DAY_OF_THE_WEEK>]
+    [-d <DATE_or_DAY_OF_THE_WEEK>]
     [-m <MONTH>]
     [-y <YEAR>]
 ```
