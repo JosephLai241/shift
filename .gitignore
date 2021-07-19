@@ -1,4 +1,5 @@
 shifts/
+shifts.db
 
 .shiftconfig.yml
 .shiftstatus
