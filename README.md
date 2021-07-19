@@ -8,6 +8,10 @@
 # Table of Contents
 
 * [Introduction](#introduction)
+    + [Compile `shift`](#compile-shift)
+    + [Verify/Run the Executable](#verifyrun-the-executable)
+        * [On Linux or Mac](#on-linux-or-mac)
+        * [On Windows](#on-windows)
 * [Installation](#installation)
 * [How `shift` Works](#how-shift-works)
     + [What Kind of Data Is Stored?](#what-kind-of-data-is-stored)
@@ -30,6 +34,8 @@ This project is based on Luke Schenk's Python CLI tool [`clck`][clck].
 
 # Installation
 
+## Compile `shift`
+
 You will need [Go][Go] installed on your computer to compile the source code.
 
 ```
@@ -38,10 +44,20 @@ cd shift/
 go build
 ```
 
-Then verify `shift` built successfully:
+## Verify/Run the Executable
+
+Run the executable to verify `shift` compiled successfully.
+
+### On Linux or Mac
 
 ```
 ./shift version
+```
+
+### On Windows
+
+```
+shift.exe version
 ```
 
 > ***NOTE:*** This program initializes and reads from files in your current working directory. Run `shift` in a directory in which you would like all your records and program-related files to be stored.
