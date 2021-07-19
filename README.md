@@ -30,7 +30,7 @@
 
 `shift` is a command-line tool for keeping track of shifts. Its primary audience is contractors (like myself) or remote workers who need to track their own hours, but it is still useful for logging time spent doing anything.
 
-This project is based on Luke Schenk's Python CLI tool [`clck`][clck].
+This project is inspired by Luke Schenk's Python CLI tool [`clck`][clck].
 
 # Installation
 
@@ -43,6 +43,8 @@ git clone --depth=1 git@github.com:JosephLai241/shift.git
 cd shift/
 go build
 ```
+
+The executable file `shift` (on Linux or Mac) or `shift.exe` (on Windows) is created in the `shift/` directory once compiling is done. 
 
 ## Verify/Run the Executable
 
