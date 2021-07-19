@@ -95,7 +95,7 @@ Accepted values are:
 	},
 }
 
-// Add the `in` command and its sub-commands to the base command.
+// Add the `storage` command and its sub-commands to the base command.
 func init() {
 	rootCmd.AddCommand(storageCmd)
 
