@@ -14,7 +14,7 @@ import (
 // rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "shift",
-	Short: "A command-line application for tracking shift (clock-in, clock-out, duration, etc.) data",
+	Short: "A command-line application for tracking shift (clock-in, clock-out, shift duration, etc.) data",
 	Long: `
      _   _ ___ _   
  ___| |_|_|  _| |_ 
@@ -24,7 +24,7 @@ var rootCmd = &cobra.Command{
 Author: Joseph Lai
 GitHub: https://github.com/JosephLai241/shift
 
-shift is a command-line application designed for contractors/remote workers
+'shift' is a command-line application designed for contractors/remote workers
 who need to keep track of their own working hours. Or for anything else you want 
 to track. Inspired by Luke Schenk's Python CLI tool 'clck'.
 
@@ -34,6 +34,12 @@ This program performs CRUD operations on your local machine for the following:
 - clock-out time
 - shift duration
 - any messages associated with a clock-in or clock-out command call
+
+|| NOTE: 'shift' initializes and reads from files in your current working directory.
+|| Run it in a directory in which you would like all your records and program-related
+|| files to be stored.
+
+---
 
 The commands you will likely interact with most are:
 
@@ -49,9 +55,11 @@ in size. These commands are:
 - delete
 
 Almost all of the commands included in this program contain additional, optional
-flags that provide granular control over its operations. I strongly recommend looking
-at the help menu for each command to fully take advantage of the features included
-for each. You can do so by running 'shift help [COMMAND_NAME]'.
+flags or sub-commands that provide granular control over its operations. I strongly 
+recommend looking at the help menu for each command to fully take advantage of 
+the features included for each. You can do so by running 'shift help [COMMAND_NAME]'.
+
+---
 
 This program allows you to configure how you want to save your recorded shifts.
 There are two available options:
@@ -59,26 +67,26 @@ There are two available options:
 - timesheet (CSV spreadsheets)
 - database  (relational SQLite database)
 
-Timesheet is the default option; however, you can configure shift to record shifts
+Timesheet is the default option; however, you can configure 'shift' to record shifts
 to a SQLite database instead by using the 'storage' command. See the help menu for
 the command to learn more about how to do so.
 
-If shift is configured to record shifts in timesheets, the directory 'shifts' is
+If 'shift' is configured to record shifts in timesheets, the directory 'shifts' is
 created in your current working directory. This directory contains a sub-directory
 labeled with the current year. CSV files labeled with the current month are created
 within the year directory, which contain shift data. This is an example of the 'shifts'
-directory if you ran shift sometime during July 2021:
+directory if you ran 'shift' sometime during July 2021:
 
 shifts/
 └── 2021
     └── July.csv
 
-If shift is configured to record shifts in the database instead, 'shifts.db' is
-created in your current working directory. shift then creates the main 'YEAR'
+If 'shift' is configured to record shifts in the database instead, 'shifts.db' is
+created in your current working directory. 'shift' then creates the main 'YEAR'
 table, which holds the current year. The entry then points to a 'Y_CURRENT_YEAR'
-table containing the months in which you ran shift. Finally, the months point to a
+table containing the months in which you ran 'shift'. Finally, the months point to a
 'M_CURRENT_MONTH' table containing shift data. This is an example of the relationships
-within 'shifts.db' if you ran shift sometime during July 2021:
+within 'shifts.db' if you ran 'shift' sometime during July 2021:
 
 shifts.db
 └── TABLE 'YEAR'
