@@ -19,7 +19,7 @@ var versionCmd = &cobra.Command{
 	},
 }
 
-// Add the version flag to the base command.
+// Add the `version` flag to the base command.
 func init() {
 	rootCmd.AddCommand(versionCmd)
 }
