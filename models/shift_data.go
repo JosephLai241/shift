@@ -4,7 +4,6 @@ package models
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -264,12 +263,6 @@ GROUP BY ShiftID
 	)
 
 	dRows := modify.DeserializeRows(database, havingQuery)
-	if len(dRows) == 0 {
-		utils.CheckError(
-			fmt.Sprintf("Query: \n%s\n", havingQuery),
-			errors.New("no records were found"),
-		)
-	}
 
 	return dRows
 }
