@@ -10,6 +10,7 @@
 * [Introduction](#introduction)
 * [Installation](#installation)
 * [How `shift` Works](#how-shift-works)
+    + [What Kind of Data Is Stored?](#what-kind-of-data-is-stored)
     + [Storing Data Into Timesheets](#storing-data-into-timesheets)
     + [Storing Data Into a SQLite Instance](#storing-data-into-a-sqlite-instance)
 * [How To Use `shift`](#how-to-use-shift)
@@ -43,15 +44,27 @@ Then verify `shift` built successfully:
 ./shift version
 ```
 
-> ***NOTE:*** This program initializes and reads from files in your current working directory. Run `shift` in a directory in which you would like all your records to be stored.
+> ***NOTE:*** This program initializes and reads from files in your current working directory. Run `shift` in a directory in which you would like all your records and program-related files to be stored.
 
 # How `shift` Works
 
 This tool is capable of storing shift data into CSV spreadsheets or a local SQLite instance. **The default is CSV spreadsheets**. See the [How to Set the Storage Option](#how-to-set-the-storage-option) section for information on how to configure this.
 
+## What Kind of Data Is Stored?
+
+The following data will be recorded by `shift`:
+
+* Date
+* Day of the Week
+* Clock-in Time
+* Clock-in Message
+* Clock-out Time
+* Clock-out Message
+* Shift Duration
+
 ## Storing Data Into Timesheets
 
-The directory `shifts/CURRENT_YEAR` is created within the current working directory. User-entered information is then recorded into a CSV-format timesheet titled `CURRENT_MONTH.csv`, located in the `CURRENT_YEAR` directory.
+The directory `shifts/CURRENT_YEAR` is created within the current working directory. Data is then recorded into a CSV-format timesheet titled `CURRENT_MONTH.csv`, located in the `CURRENT_YEAR` directory.
 
 This is an example of the `shifts` directory structure if you ran `shift` sometime during July 2021:
 
@@ -60,14 +73,6 @@ shifts/
 └── 2021
     └── July.csv
 ```
-
-The information that is always recorded into the timesheet includes:
-
-* Clock-in time
-* Clock-out time
-* Shift duration
-
-Optionally, an accompanying clock-in or clock-out message will also be written to the timesheet.
 
 ## Storing Data Into a SQLite Instance
 
