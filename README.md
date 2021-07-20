@@ -10,10 +10,9 @@
 # Table of Contents
 
 * [Introduction](#introduction)
-    + [Compile `shift`](#compile-shift)
-    + [Verify/Run the Executable](#verifyrun-the-executable)
-        * [On Linux or Mac](#on-linux-or-mac)
-        * [On Windows](#on-windows)
+    + [Compile `shift` From Source](#compile-shift-from-source)
+        * [Verify/Run the Executable](#verifyrun-the-executable)
+    + [Or Download a Binary](#or-download-a-binary)
 * [Installation](#installation)
 * [How `shift` Works](#how-shift-works)
     + [What Kind of Data Is Stored?](#what-kind-of-data-is-stored)
@@ -41,7 +40,7 @@ This project is inspired by Luke Schenk's Python CLI tool [`clck`][clck].
 
 # Installation
 
-## Compile `shift`
+## Compile `shift` From Source
 
 You will need [Go][Go] installed on your computer to compile the source code.
 
@@ -53,21 +52,25 @@ go build
 
 The executable file `shift` (on Linux or Mac) or `shift.exe` (on Windows) is created in the `shift/` directory once compiling is done. 
 
-## Verify/Run the Executable
+### Verify/Run the Executable
 
 Run the executable to verify `shift` compiled successfully.
 
-### On Linux or Mac
+On Linux or Mac:
 
 ```
 ./shift version
 ```
 
-### On Windows
+On Windows:
 
 ```
 shift.exe version
 ```
+
+## Or Download a Binary
+
+If you do not want to compile `shift`, you can also download a binary attached to each release in the [Releases][Releases] section.
 
 > ***NOTE:*** This program initializes and reads from files in your current working directory. Run `shift` in a directory in which you would like all your records and program-related files to be stored.
 
@@ -281,6 +284,7 @@ You are now able to track the time you spent doing different things :thumbsup:
 <!-- LINKS -->
 [Go]: https://golang.org/
 [clck]: https://github.com/LukeDSchenk/clck
+[Releases]: https://github.com/JosephLai241/shift/releases
 
 <!-- DEMO LINKS -->
 [Active Status Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/active_status.png
