@@ -21,6 +21,8 @@
     + [Clocking In](#clocking-in)
     + [Clocking Out](#clocking-out)
     + [Check Current Status](#check-current-status)
+        * [If `shift` Is Active](#if-shift-is-active)
+        * [If `shift` Is Inactive](#if-shift-is-inactive)
     + [Amend Shift Message](#amend-shift-message)
     + [List Tracked Shifts](#list-tracked-shifts)
     + [Delete a Shift](#delete-a-shift)
@@ -110,6 +112,8 @@ shifts.db
 
 ## Clocking In
 
+![Clock-In Demo][Clock-In Demo]
+
 ```
 shift in
 
@@ -123,6 +127,8 @@ You can record a message corresponding to your clock in by including the `-m` fl
 The status of your current shift is displayed if you attempt to run this command when already clocked in.
 
 ## Clocking Out
+
+![Clock-Out Demo][Clock-Out Demo]
 
 ```
 shift out
@@ -146,17 +152,19 @@ shift status
 
 Use this command to display the current shift status.
 
-This is a table of behaviors that can come from running this command:
+### If `shift` Is Active
 
-| Currently Clocked In | Clocked Out/Inactive       | No Shifts Tracked |
-|----------------------|----------------------------|-------------------|
-| `CLOCK_IN_TIME`      | `LAST_CLOCK_OUT_TIME`      | *Error message    |
-| `CLOCK_IN_MESSAGE`   | `LAST_CLOCK_OUT_MESSAGE`   |                   |
-| `Duration`           |                            |                   |
+![Active Status Demo][Active Status Demo]
 
-\* If you have never run `shift` prior to running the `status` command, an error message will inform you to track a shift before attempting to run the command.
+### If `shift` Is Inactive
+
+![Inactive Status Demo][Inactive Status Demo]
+
+> ***NOTE:*** If you have never run `shift` prior to running the `status` command, an error message will inform you to track a shift before attempting to run the command.
 
 ## Amend Shift Message
+
+![Amend Demo][Amend Demo]
 
 ```
 shift amend (in|out) "YOUR NEW MESSAGE"
@@ -179,6 +187,8 @@ You can search for recorded shifts on a different day, month, and/or year by inc
 > ***NOTE:*** Type the entire year in YYYY format when using the `-y` flag, ie. 2021.
 
 ## List Tracked Shifts
+
+![List Demo][List Demo]
 
 ```
 shift list [all]
@@ -203,6 +213,8 @@ You can display the recorded shifts for a different day, month, and/or year by i
 > ***NOTE:*** Type the entire year in YYYY format when using the `-y` flag, ie. 2021.
 
 ## Delete a Shift
+
+![Delete Demo][Delete Demo]
 
 ```
 shift delete
@@ -254,6 +266,15 @@ URS/
 
 You are now able to track the time you spent doing different things :thumbsup:
 
-<!-- Links -->
+<!-- LINKS -->
 [Go]: https://golang.org/
 [clck]: https://github.com/LukeDSchenk/clck
+
+<!-- DEMO LINKS -->
+[Active Status Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/active_status.png
+[Amend Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/amend.png
+[Clock-In Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/in.png
+[Clock-Out Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/out.png
+[Delete Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/delete.png
+[Inactive Status Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/inactive_status.png
+[List Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/list.png
