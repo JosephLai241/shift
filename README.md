@@ -238,6 +238,8 @@ You can search for recorded shifts on a different day, month, and/or year by inc
 
 # How to Set the Storage Option
 
+![Storage Demo][Storage Demo]
+
 ```
 shift storage 
 
@@ -278,3 +280,4 @@ You are now able to track the time you spent doing different things :thumbsup:
 [Delete Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/delete.png
 [Inactive Status Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/inactive_status.png
 [List Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/list.png
+[Storage Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/storage.png
