@@ -71,7 +71,7 @@ shift.exe version
 
 # How `shift` Works
 
-This tool is capable of storing shift data into CSV spreadsheets or a local SQLite instance. **The default is CSV spreadsheets**. See the [How to Set the Storage Method](#how-to-set-the-storage-method) section for information on how to configure this.
+This tool is capable of storing shift data into CSV spreadsheets or a local SQLite instance. **The default is CSV spreadsheets**. See the [Storage/How to Set the Storage Method](#storagehow-to-set-the-storage-method) section for information on how to configure this.
 
 ## What Kind of Data Is Stored?
 
