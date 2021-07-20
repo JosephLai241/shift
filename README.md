@@ -42,7 +42,13 @@
 
 # Storage
 
+## Display Current Storage Method
+
 ![Storage Demo][Storage Demo]
+
+## Set New Storage Method
+
+![Set Storage Demo][Set Storage Demo]
 
 <!-- LINKS -->
 [Active Status Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/active_status.png
@@ -53,3 +59,4 @@
 [Inactive Status Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/inactive_status.png
 [List Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/list.png
 [Storage Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/storage.png
+[Set Storage Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/set_storage.png
