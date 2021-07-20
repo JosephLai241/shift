@@ -8,6 +8,7 @@
 + [Amend Shift Message](#amend-shift-message)
 + [List Tracked Shifts](#list-tracked-shifts)
 + [Delete a Shift](#delete-a-shift)
++ [Storage](#storage)
 
 # Clocking In
 
@@ -39,6 +40,10 @@
 
 ![Delete Demo][Delete Demo]
 
+# Storage
+
+![Storage Demo][Storage Demo]
+
 <!-- LINKS -->
 [Active Status Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/active_status.png
 [Amend Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/amend.png
@@ -47,3 +52,4 @@
 [Delete Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/delete.png
 [Inactive Status Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/inactive_status.png
 [List Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/list.png
+[Storage Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/storage.png
