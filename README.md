@@ -2,13 +2,17 @@
 
 # Table of Contents
 
-+ [Clocking In](#clocking-in)
-+ [Clocking Out](#clocking-out)
-+ [Check Current Status](#check-current-status)
-+ [Amend Shift Message](#amend-shift-message)
-+ [List Tracked Shifts](#list-tracked-shifts)
-+ [Delete a Shift](#delete-a-shift)
-+ [Storage](#storage)
+* [Clocking In](#clocking-in)
+* [Clocking Out](#clocking-out)
+* [Check Current Status](#check-current-status)
+    + [Active Status](#active-status)
+    + [Inactive Status](#inactive-status)
+* [Amend Shift Message](#amend-shift-message)
+* [List Tracked Shifts](#list-tracked-shifts)
+* [Delete a Shift](#delete-a-shift)
+* [Storage](#storage)
+    + [Display Current Storage Method](#display-current-storage-method)
+    + [Set New Storage Method](#set-new-storage-method)
 
 # Clocking In
 
