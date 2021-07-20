@@ -176,7 +176,7 @@ shift amend (in|out) "YOUR NEW MESSAGE"
 
 Use this command to amend the most recent shift's clock-in or clock-out message.
 
-If used without any optional flags, `shift` will target the most recently recorded shift on the current day.
+If used without any optional flags, `shift` will target shifts recorded on the current day.
 
 You can search for recorded shifts on a different day, month, and/or year by including the `-d`, `-m`, and/or `-y` flags. Combine these flags in addition to `all` to narrow your search.
 
@@ -226,7 +226,7 @@ shift delete
 
 Use this command to delete a recorded shift.
 
-If used without any optional flags, `shift` will target the most recently recorded shift on the current day.
+If used without any optional flags, `shift` will target shifts recorded on the current day.
 
 You can search for recorded shifts on a different day, month, and/or year by including the `-d`, `-m`, and/or `-y` flags. Combine these flags in addition to `all` to narrow your search.
 
@@ -258,10 +258,10 @@ It is quite a simple solution - just copy the `shift` executable into different 
 
 ```
 day_job/
-└── shift <-- executable
+└── shift <--- executable
 
 URS/
-└── shift <-- executable
+└── shift <--- executable
 ```
 
 You are now able to track the time you spent doing different things :thumbsup:
