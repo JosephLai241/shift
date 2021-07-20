@@ -4,6 +4,8 @@
     |___|_|_|_|_| |_|
 
 [![Go Badge](https://img.shields.io/badge/-lang-blue?logo=go)][Go]
+![Lines of code](https://img.shields.io/tokei/lines/github/JosephLai241/shift)
+![License Badge](https://img.shields.io/github/license/JosephLai241/shift)
 
 # Table of Contents
 
