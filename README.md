@@ -26,7 +26,9 @@
     + [Amend Shift Message](#amend-shift-message)
     + [List Tracked Shifts](#list-tracked-shifts)
     + [Delete a Shift](#delete-a-shift)
-* [How to Set the Storage Option](#how-to-set-the-storage-option)
+* [Storage/How to Set the Storage Method](#storagehow-to-set-the-storage-method)
+    + [Display Current Storage Method](#display-current-storage-method)
+    + [Set New Storage Method](#set-new-storage-method)
 * [Multiple "Instances" of `shift`](#multiple-instances-of-shift)
 
 # Introduction
@@ -69,7 +71,7 @@ shift.exe version
 
 # How `shift` Works
 
-This tool is capable of storing shift data into CSV spreadsheets or a local SQLite instance. **The default is CSV spreadsheets**. See the [How to Set the Storage Option](#how-to-set-the-storage-option) section for information on how to configure this.
+This tool is capable of storing shift data into CSV spreadsheets or a local SQLite instance. **The default is CSV spreadsheets**. See the [How to Set the Storage Method](#how-to-set-the-storage-method) section for information on how to configure this.
 
 ## What Kind of Data Is Stored?
 
@@ -236,9 +238,7 @@ You can search for recorded shifts on a different day, month, and/or year by inc
 
 > ***NOTE:*** Type the entire year in YYYY format when using the `-y` flag, ie. 2021.
 
-# How to Set the Storage Option
-
-![Storage Demo][Storage Demo]
+# Storage/How to Set the Storage Method
 
 ```
 shift storage 
@@ -246,9 +246,17 @@ shift storage
     [set (timesheet|database)]
 ```
 
-You can check the current storage option by using the `storage` command without additional sub-commands.
+## Display Current Storage Method
 
-You can change the storage option by including the `set` sub-command and providing `timesheet` or `database` as its value to switch from one to another.
+![Storage Demo][Storage Demo]
+
+You can check the current storage method by using the `storage` command without additional sub-commands.
+
+## Set New Storage Method
+
+![Set Storage Demo][Set Storage Demo]
+
+You can change the storage method by including the `set` sub-command and providing `timesheet` or `database` as its value to switch from one to another.
 
 > ***NOTE***: You cannot change storage options while clocked in. `shift` will throw an error if you attempt to do so.
 
@@ -281,3 +289,4 @@ You are now able to track the time you spent doing different things :thumbsup:
 [Inactive Status Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/inactive_status.png
 [List Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/list.png
 [Storage Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/storage.png
+[Set Storage Demo]: https://github.com/JosephLai241/shift/blob/demo/screenshots/set_storage.png
